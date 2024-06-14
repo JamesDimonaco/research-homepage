@@ -3,13 +3,19 @@ import { SanityDocument } from "next-sanity";
 import { sanityFetch } from "../sanity/lib/client";
 import { urlForImage } from "@/sanity/lib/image";
 import Section, { type ISection } from "./components/Section";
+import ContactSection from "./components/ContactSection";
 
 const query = `*[_type == "homePage"][0]`;
+const contactQuery = `*[_type == "contactInfo"][0]`;
 
 export default async function Home() {
   const homePage = await sanityFetch<SanityDocument>({ query });
+  const { email, phoneNumber, linkedin, X } = await sanityFetch<SanityDocument>(
+    {
+      query: contactQuery,
+    }
+  );
   const image = homePage.image ? urlForImage(homePage.image) : null;
-  console.log(homePage.sections);
 
   const Sections = homePage.sections.map((section: ISection, index: number) => (
     <Section
@@ -47,6 +53,12 @@ export default async function Home() {
         </div>
       </section>
       {Sections}
+      <ContactSection
+        email={email}
+        phoneNumber={phoneNumber}
+        linkedin={linkedin}
+        x={X}
+      />
     </div>
   );
 }
