@@ -1,5 +1,7 @@
 import { sanityFetch } from "@/sanity/lib/client";
+import { urlForImage } from "@/sanity/lib/image";
 import { SanityDocument } from "next-sanity";
+import Image from "next/image";
 import Link from "next/link";
 
 const query = `*[_type == "publication"]`;
@@ -14,37 +16,49 @@ export default async function Publications() {
           Publications
         </h1>
         <ul className="grid grid-cols-1  gap-8">
-          {publications.map((publication, index) => (
-            <li
-              key={index}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden"
-            >
-              <div className="p-6">
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  {publication.description.substring(0, 300)}...
-                </p>
-                <div className="flex justify-between">
-                  <Link
-                    href={publication.googleScholarLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 dark:text-blue-400 hover:underline"
-                    prefetch={false}
-                  >
-                    Read on Google Scholar
-                  </Link>
-                  <span className="text-gray-300 font-bold">
-                    Published at:{" "}
-                    {
-                      new Date(publication.publicationDate)
-                        .toISOString()
-                        .split("T")[0]
-                    }
-                  </span>
+          {publications.map((publication, index) => {
+            const image = publication.image
+              ? urlForImage(publication.image)
+              : null;
+            return (
+              <li
+                key={index}
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden"
+              >
+                <div className="p-6">
+                  <p className="text-gray-600 dark:text-gray-300 mb-4 md:flex">
+                    {publication.description.substring(0, 500)}...
+                    <Image
+                      src={image || ""}
+                      width={300}
+                      height={300}
+                      alt="Image of the publication"
+                      className="rounded-lg"
+                    />
+                  </p>
+                  <div className="flex justify-between">
+                    <Link
+                      href={publication.googleScholarLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 dark:text-blue-400 hover:underline"
+                      prefetch={false}
+                    >
+                      Read on Google Scholar
+                    </Link>
+                    <span className="text-gray-300 font-bold">
+                      Published at:{" "}
+                      {
+                        new Date(publication.publicationDate)
+                          .toISOString()
+                          .split("T")[0]
+                      }
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       </div>
     </main>

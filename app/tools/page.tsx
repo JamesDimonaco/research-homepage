@@ -1,5 +1,7 @@
 import { sanityFetch } from "@/sanity/lib/client";
+import { urlForImage } from "@/sanity/lib/image";
 import { SanityDocument } from "next-sanity";
+import Image from "next/image";
 import Link from "next/link";
 
 const query = `*[_type == "tool"]`;
@@ -14,30 +16,40 @@ export default async function Tools() {
           Tools
         </h1>
         <ul className="grid grid-cols-1  gap-8">
-          {tools.map((tool, index) => (
-            <li
-              key={index}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden"
-            >
-              <div className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                  {tool.name}
-                </h2>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  {tool.description}
-                </p>
-                <Link
-                  href={tool.githubLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 dark:text-blue-400 hover:underline"
-                  prefetch={false}
-                >
-                  View on GitHub
-                </Link>
-              </div>
-            </li>
-          ))}
+          {tools.map((tool, index) => {
+            const image = tool.image ? urlForImage(tool.image) : null;
+            return (
+              <li
+                key={index}
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden"
+              >
+                <div className="p-6">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    {tool.name}
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-300 mb-4 md:flex">
+                    {tool.description}
+                    <Image
+                      src={image || ""}
+                      width={300}
+                      height={300}
+                      alt="Image of the tool"
+                      className="rounded-lg"
+                    />
+                  </p>
+                  <Link
+                    href={tool.githubLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
+                    prefetch={false}
+                  >
+                    View on GitHub
+                  </Link>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </main>
