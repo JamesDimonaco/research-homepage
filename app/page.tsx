@@ -10,11 +10,9 @@ const contactQuery = `*[_type == "contactInfo"][0]`;
 
 export default async function Home() {
   const homePage = await sanityFetch<SanityDocument>({ query });
-  const { email, phoneNumber, linkedin, X } = await sanityFetch<SanityDocument>(
-    {
-      query: contactQuery,
-    }
-  );
+  const { email, phone, linkedin, X } = await sanityFetch<SanityDocument>({
+    query: contactQuery,
+  });
   const image = homePage.image ? urlForImage(homePage.image) : null;
 
   const Sections = homePage.sections.map((section: ISection, index: number) => (
@@ -55,7 +53,7 @@ export default async function Home() {
       {Sections}
       <ContactSection
         email={email}
-        phoneNumber={phoneNumber}
+        phoneNumber={phone}
         linkedin={linkedin}
         x={X}
       />
