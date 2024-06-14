@@ -26,7 +26,7 @@ export default async function Publications() {
                 className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden"
               >
                 <div className="p-6">
-                  <p className="text-gray-600 dark:text-gray-300 mb-4 md:flex">
+                  <p className="text-gray-600 dark:text-gray-300 mb-4 md:flex md:justify-between">
                     {publication.description.substring(0, 500)}...
                     <Image
                       src={image || ""}

@@ -27,7 +27,7 @@ export default async function Tools() {
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                     {tool.name}
                   </h2>
-                  <p className="text-gray-600 dark:text-gray-300 mb-4 md:flex">
+                  <p className="text-gray-600 dark:text-gray-300 mb-4 md:flex md: justify-between">
                     {tool.description}
                     <Image
                       src={image || ""}
