@@ -4,7 +4,6 @@ import { sanityFetch } from "../sanity/lib/client";
 import { urlForImage } from "@/sanity/lib/image";
 import Section, { type ISection } from "./components/Section";
 import ContactSection from "./components/ContactSection";
-import Header from "./components/Header";
 
 const query = `*[_type == "homePage"][0]`;
 const contactQuery = `*[_type == "contactInfo"][0]`;
@@ -30,7 +29,6 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col">
-      <Header />
       <section className="bg-gray-100 dark:bg-gray-900 py-24">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div>

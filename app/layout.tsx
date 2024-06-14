@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Libre_Franklin } from "next/font/google";
 import "./globals.css";
+import Header from "./components/Header";
 
 const libre_franklin = Libre_Franklin({
   subsets: ["latin"],
@@ -22,7 +23,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={libre_franklin.variable}>{children}</body>
+      <body className={libre_franklin.variable}>
+        <Header />
+        {children}
+      </body>
     </html>
   );
 }
