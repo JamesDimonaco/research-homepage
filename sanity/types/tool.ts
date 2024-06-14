@@ -20,6 +20,14 @@ const toolType = defineType({
       title: "GitHub Link",
       type: "url",
     }),
+    defineField({
+      name: "image",
+      title: "Image",
+      type: "image",
+      options: {
+        hotspot: true,
+      },
+    }),
   ],
 });
 export default toolType;

@@ -25,6 +25,14 @@ const publicationType = defineType({
       title: "Google Scholar Link",
       type: "url",
     }),
+    defineField({
+      name: "image",
+      title: "Image",
+      type: "image",
+      options: {
+        hotspot: true,
+      },
+    }),
   ],
 });
 export default publicationType;
