@@ -20,6 +20,7 @@ export async function sanityFetch<QueryResponse>({
   tags?: string[];
 }) {
   return client.fetch<QueryResponse>(query, params, {
+    //TODO - revalidate to 3600 for production
     next: {
       revalidate: process.env.NODE_ENV === "development" ? 30 : 60,
       tags,
