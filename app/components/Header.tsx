@@ -33,6 +33,7 @@ const Header = () => (
         </ul>
       </nav>
     </div>
+    <div className="border border-gray-500" style={{ width: "100%" }} />
   </header>
 );
 export default Header;

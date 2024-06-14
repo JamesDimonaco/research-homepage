@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const query = `*[_type == "publication"]`;
 
-export default async function Home() {
+export default async function Publications() {
   const publications = await sanityFetch<SanityDocument[]>({ query });
 
   return (
@@ -23,15 +23,25 @@ export default async function Home() {
                 <p className="text-gray-600 dark:text-gray-300 mb-4">
                   {publication.description.substring(0, 300)}...
                 </p>
-                <Link
-                  href={publication.googleScholarLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 dark:text-blue-400 hover:underline"
-                  prefetch={false}
-                >
-                  Read on Google Scholar
-                </Link>
+                <div className="flex justify-between">
+                  <Link
+                    href={publication.googleScholarLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
+                    prefetch={false}
+                  >
+                    Read on Google Scholar
+                  </Link>
+                  <span className="text-gray-300 font-bold">
+                    Published at:{" "}
+                    {
+                      new Date(publication.publicationDate)
+                        .toISOString()
+                        .split("T")[0]
+                    }
+                  </span>
+                </div>
               </div>
             </li>
           ))}
