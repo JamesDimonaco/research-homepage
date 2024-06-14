@@ -24,7 +24,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={libre_franklin.variable}>
-        <Header />
+        <header className="sticky">
+          <Header />
+        </header>
         {children}
       </body>
     </html>

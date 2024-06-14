@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const Header = () => (
-  <header className="bg-gray-100 dark:bg-gray-900 py-4">
+  <header className="bg-gray-100 dark:bg-gray-900 py-4 fixed top-0 z-10 w-full">
     <div className="container mx-auto px-4 md:px-6 lg:px-8 flex justify-between items-center">
       <Link
         href="/"
