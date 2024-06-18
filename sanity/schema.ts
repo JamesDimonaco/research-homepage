@@ -5,6 +5,9 @@ import {
   publicationType,
   sectionType,
   toolType,
+  PageType,
+  ContentType,
+  CTAType,
 } from "./types";
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -13,5 +16,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     publicationType,
     sectionType,
     toolType,
+    PageType,
+    ContentType,
+    CTAType,
   ],
 };
