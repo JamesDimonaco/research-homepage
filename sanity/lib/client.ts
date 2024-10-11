@@ -22,8 +22,9 @@ export async function sanityFetch<QueryResponse>({
   return client.fetch<QueryResponse>(query, params, {
     //TODO - revalidate to 3600 for production
     next: {
-      revalidate: process.env.NODE_ENV === "development" ? 30 : 60,
+      // revalidate: process.env.NODE_ENV === "development" ? 30 : 60,
       tags,
+      revalidate: 1,
     },
   });
 }

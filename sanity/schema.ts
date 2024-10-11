@@ -9,6 +9,16 @@ import {
   ContentType,
   CTAType,
 } from "./types";
+import {
+  Button,
+  Accordion,
+  Card,
+  Carousel,
+  Collapsible,
+  Command,
+  RadioGroup,
+  Separator,
+} from "./types/components";
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
     homePageType,
@@ -19,5 +29,13 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     PageType,
     ContentType,
     CTAType,
+    Button,
+    Accordion,
+    Card,
+    Carousel,
+    Collapsible,
+    Command,
+    RadioGroup,
+    Separator,
   ],
 };

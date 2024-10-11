@@ -1,15 +1,15 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 const PageType = defineType({
-  name: "pages",
+  name: "page",
   title: "Pages",
   type: "document",
-
   fields: [
     defineField({
       name: "name",
       title: "Page Name",
       type: "string",
+      description: "Page Title",
     }),
     defineField({
       name: "slug",
@@ -23,17 +23,19 @@ const PageType = defineType({
       validation: (Rule) => Rule.required(),
       hidden: ({ document }) => !document?.name,
     }),
-
     defineField({
       name: "content",
       title: "Content",
       type: "array",
       of: [
-        defineArrayMember({
-          name: "content-child",
-          type: "reference",
-          to: [{ type: "content" }],
-        }),
+        { type: "accordion" },
+        { type: "button" },
+        { type: "card" },
+        { type: "carousel" },
+        { type: "collapsible" },
+        { type: "command" },
+        { type: "radioGroup" },
+        { type: "separator" },
       ],
     }),
   ],

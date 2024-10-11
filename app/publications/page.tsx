@@ -1,5 +1,6 @@
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlForImage } from "@/sanity/lib/image";
+import PageTitle from "@/app/_components/PageTitle";
 import { SanityDocument } from "next-sanity";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,9 +13,7 @@ export default async function Publications() {
   return (
     <main className="bg-gray-100 dark:bg-gray-900 py-24 h-screen">
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-8">
-          Publications
-        </h1>
+        <PageTitle titleText="Publications" />
         <ul className="grid grid-cols-1  gap-8">
           {publications.map((publication, index) => {
             const image = publication.image

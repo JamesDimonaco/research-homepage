@@ -3,10 +3,10 @@ import { FaLinkedin, FaXTwitter, FaPhone } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
 
 type IContactSection = {
-  email: string;
-  phoneNumber: string;
-  linkedin: string;
-  x: string;
+  email?: string;
+  phoneNumber?: string;
+  linkedin?: string;
+  x?: string;
 };
 
 const ContactSection = ({

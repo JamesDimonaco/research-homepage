@@ -2,8 +2,8 @@ import Image from "next/image";
 import { SanityDocument } from "next-sanity";
 import { sanityFetch } from "../sanity/lib/client";
 import { urlForImage } from "@/sanity/lib/image";
-import Section, { type ISection } from "./components/Section";
-import ContactSection from "./components/ContactSection";
+import Section, { type ISection } from "./_components/Section";
+import ContactSection from "./_components/ContactSection";
 
 const query = `*[_type == "homePage"][0]`;
 const contactQuery = `*[_type == "contactInfo"][0]`;
@@ -15,15 +15,17 @@ export default async function Home() {
   });
   const image = homePage.image ? urlForImage(homePage.image) : null;
 
-  const Sections = homePage.sections.map((section: ISection, index: number) => (
-    <Section
-      key={index}
-      title={section.title}
-      text={section.text}
-      image={section.image}
-      orientation={section.orientation}
-    />
-  ));
+  const Sections = homePage.sections
+    ? homePage.sections.map((section: ISection, index: number) => (
+        <Section
+          key={index}
+          title={section.title}
+          text={section.text}
+          image={section.image}
+          orientation={section.orientation}
+        />
+      ))
+    : null;
 
   return (
     <div className="flex flex-col">
@@ -50,7 +52,7 @@ export default async function Home() {
           </div>
         </div>
       </section>
-      {Sections}
+      {Sections ?? Sections}
       <ContactSection
         email={email}
         phoneNumber={phone}

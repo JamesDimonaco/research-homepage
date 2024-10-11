@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Libre_Franklin } from "next/font/google";
 import "./globals.css";
-import Header from "./components/Header";
+import Header from "./_components/Header";
 
 const libre_franklin = Libre_Franklin({
   subsets: ["latin"],
