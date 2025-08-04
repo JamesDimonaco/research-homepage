@@ -62,14 +62,23 @@ export interface Tool {
   image?: SanityImage;
 }
 
+export interface EmailItem {
+  label: string;
+  value: string;
+  _key?: string;
+}
+
 export interface ContactInfo {
   _id: string;
   _type: "contactInfo";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  email: string;
-  phone: string;
-  linkedin: string;
-  X: string;
+  emails?: EmailItem[];
+  email?: string; // Legacy field for backward compatibility
+  phone?: string;
+  linkedin?: string;
+  X?: string;
+  github?: string;
+  googleScholar?: string;
 }
