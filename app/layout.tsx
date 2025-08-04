@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={libre_franklin.variable}>
+      <body className={`${libre_franklin.variable} overflow-x-hidden`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -32,7 +32,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Header />
-          {children}
+          <main className="min-h-screen overflow-x-hidden">
+            {children}
+          </main>
         </ThemeProvider>
       </body>
     </html>

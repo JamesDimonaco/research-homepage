@@ -37,8 +37,8 @@ export default async function Home() {
   ));
 
   return (
-    <div className="flex flex-col">
-      <section className="relative py-24 md:py-32 overflow-hidden">
+    <div className="flex flex-col overflow-x-hidden">
+      <section className="relative py-16 md:py-24 lg:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
         <div className="container mx-auto px-4 md:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -54,53 +54,55 @@ export default async function Home() {
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
                 {homePage.bio}
               </p>
-              <div className="flex gap-4 pt-4">
-                <Badge variant="outline">
-                  <span className="mr-2">📚</span>
+              <div className="flex flex-wrap gap-2 pt-4">
+                <Badge variant="outline" className="text-sm">
+                  <span className="mr-1">📚</span>
                   Academic Research
                 </Badge>
-                <Badge variant="outline">
-                  <span className="mr-2">🔬</span>
+                <Badge variant="outline" className="text-sm">
+                  <span className="mr-1">🔬</span>
                   Scientific Innovation
                 </Badge>
               </div>
             </div>
             <div className="flex justify-center md:justify-end">
               {image ? (
-                <div className="relative">
+                <div className="relative max-w-[400px] mx-auto md:mx-0">
                   <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-secondary/20 rounded-full blur-3xl" />
-                  <Card className="relative border-0 shadow-2xl rounded-full overflow-hidden">
+                  <Card className="relative border-0 shadow-2xl rounded-full overflow-hidden aspect-square">
                     <Image
                       src={image}
                       width={400}
                       height={400}
                       alt={homePage.name}
-                      className="rounded-full"
+                      className="rounded-full w-full h-full object-cover"
                       priority
                     />
                   </Card>
                 </div>
               ) : (
-                <Card className="w-[400px] h-[400px] rounded-full flex items-center justify-center">
-                  <CardContent>
-                    <div className="text-center text-muted-foreground">
-                      <svg
-                        className="w-32 h-32 mx-auto mb-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                        />
-                      </svg>
-                      <p>Profile Image</p>
-                    </div>
-                  </CardContent>
-                </Card>
+                <div className="max-w-[400px] mx-auto md:mx-0">
+                  <Card className="aspect-square rounded-full flex items-center justify-center">
+                    <CardContent>
+                      <div className="text-center text-muted-foreground">
+                        <svg
+                          className="w-32 h-32 mx-auto mb-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1.5}
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                          />
+                        </svg>
+                        <p>Profile Image</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               )}
             </div>
           </div>
