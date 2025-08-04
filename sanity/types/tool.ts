@@ -21,6 +21,13 @@ const toolType = defineType({
       type: "url",
     }),
     defineField({
+      name: "linkButtonText",
+      title: "Link Button Text",
+      type: "string",
+      description: "Custom text for the link button (defaults to 'View on GitHub')",
+      initialValue: "View on GitHub",
+    }),
+    defineField({
       name: "image",
       title: "Image",
       type: "image",

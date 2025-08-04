@@ -31,6 +31,8 @@ export interface Section {
   text: string;
   image?: SanityImage;
   orientation: "imageLeft" | "imageRight";
+  linkUrl?: string;
+  openInNewTab?: boolean;
 }
 
 export interface Publication {
@@ -43,6 +45,7 @@ export interface Publication {
   publicationDate: string;
   description: string;
   googleScholarLink: string;
+  linkButtonText?: string;
   image?: SanityImage;
 }
 
@@ -55,6 +58,7 @@ export interface Tool {
   name: string;
   description: string;
   githubLink: string;
+  linkButtonText?: string;
   image?: SanityImage;
 }
 

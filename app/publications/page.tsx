@@ -10,12 +10,12 @@ export default async function Publications() {
   const publications = await sanityFetch<Publication[]>({ query });
 
   return (
-    <main className="bg-gray-100 dark:bg-gray-900 py-24 h-screen">
+    <main className="bg-gray-100 dark:bg-gray-900 py-24 min-h-screen">
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-8">
           Publications
         </h1>
-        <ul className="grid grid-cols-1  gap-8">
+        <ul className="grid grid-cols-1 gap-8">
           {publications.map((publication, index) => {
             const image = publication.image
               ? urlForImage(publication.image)
@@ -26,8 +26,13 @@ export default async function Publications() {
                 className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden"
               >
                 <div className="p-6">
-                  <p className="text-gray-600 dark:text-gray-300 mb-4 md:flex md:justify-between">
-                    {publication.description.substring(0, 500)}...
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                    {publication.title}
+                  </h2>
+                  <div className="text-gray-600 dark:text-gray-300 mb-6 md:flex md:gap-6">
+                    <div className="flex-1">
+                      <p>{publication.description}</p>
+                    </div>
                     {image ? (
                       <Image
                         src={image}
@@ -53,7 +58,7 @@ export default async function Publications() {
                         </svg>
                       </div>
                     )}
-                  </p>
+                  </div>
                   <div className="flex justify-between">
                     <Link
                       href={publication.googleScholarLink}
@@ -62,9 +67,9 @@ export default async function Publications() {
                       className="text-blue-600 dark:text-blue-400 hover:underline"
                       prefetch={false}
                     >
-                      Read on Google Scholar
+                      {publication.linkButtonText || "Read on Google Scholar"}
                     </Link>
-                    <span className="text-gray-300 font-bold">
+                    <span className="text-gray-500 dark:text-gray-400 text-sm">
                       Published at:{" "}
                       {
                         new Date(publication.publicationDate)

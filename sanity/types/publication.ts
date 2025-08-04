@@ -26,6 +26,13 @@ const publicationType = defineType({
       type: "url",
     }),
     defineField({
+      name: "linkButtonText",
+      title: "Link Button Text",
+      type: "string",
+      description: "Custom text for the link button (defaults to 'Read on Google Scholar')",
+      initialValue: "Read on Google Scholar",
+    }),
+    defineField({
       name: "image",
       title: "Image",
       type: "image",

@@ -34,6 +34,20 @@ const sectionType = defineType({
         ],
       },
     }),
+    defineField({
+      name: "linkUrl",
+      title: "Link URL (optional)",
+      type: "string",
+      description: "Add a URL to make this section clickable. Can be internal (/publications) or external (https://example.com)",
+    }),
+    defineField({
+      name: "openInNewTab",
+      title: "Open in new tab",
+      type: "boolean",
+      description: "Open link in a new browser tab (external links always open in new tab)",
+      hidden: ({ parent }) => !parent?.linkUrl,
+      initialValue: false,
+    }),
   ],
 });
 export default sectionType;

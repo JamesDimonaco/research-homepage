@@ -10,7 +10,7 @@ export default async function Tools() {
   const tools = await sanityFetch<Tool[]>({ query });
 
   return (
-    <main className="bg-gray-100 dark:bg-gray-900 py-24 h-screen">
+    <main className="bg-gray-100 dark:bg-gray-900 py-24 min-h-screen">
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-8">
           Tools
@@ -27,8 +27,10 @@ export default async function Tools() {
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                     {tool.name}
                   </h2>
-                  <p className="text-gray-600 dark:text-gray-300 mb-4 md:flex md:justify-between">
-                    {tool.description}
+                  <div className="text-gray-600 dark:text-gray-300 mb-6 md:flex md:gap-6">
+                    <div className="flex-1">
+                      <p>{tool.description}</p>
+                    </div>
                     {image ? (
                       <Image
                         src={image}
@@ -54,7 +56,7 @@ export default async function Tools() {
                         </svg>
                       </div>
                     )}
-                  </p>
+                  </div>
                   <Link
                     href={tool.githubLink}
                     target="_blank"
@@ -62,7 +64,7 @@ export default async function Tools() {
                     className="text-blue-600 dark:text-blue-400 hover:underline"
                     prefetch={false}
                   >
-                    View on GitHub
+                    {tool.linkButtonText || "View on GitHub"}
                   </Link>
                 </div>
               </li>
