@@ -1,21 +1,21 @@
 import Image from "next/image";
-import { SanityDocument } from "next-sanity";
 import { sanityFetch } from "../sanity/lib/client";
 import { urlForImage } from "@/sanity/lib/image";
-import Section, { type ISection } from "./components/Section";
+import Section from "./components/Section";
 import ContactSection from "./components/ContactSection";
+import { HomePage, ContactInfo } from "./types/sanity";
 
 const query = `*[_type == "homePage"][0]`;
 const contactQuery = `*[_type == "contactInfo"][0]`;
 
 export default async function Home() {
-  const homePage = await sanityFetch<SanityDocument>({ query });
-  const { email, phone, linkedin, X } = await sanityFetch<SanityDocument>({
+  const homePage = await sanityFetch<HomePage>({ query });
+  const { email, phone, linkedin, X } = await sanityFetch<ContactInfo>({
     query: contactQuery,
   });
   const image = homePage.image ? urlForImage(homePage.image) : null;
 
-  const Sections = homePage.sections.map((section: ISection, index: number) => (
+  const Sections = homePage.sections.map((section, index) => (
     <Section
       key={index}
       title={section.title}

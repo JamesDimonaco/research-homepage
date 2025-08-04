@@ -36,11 +36,12 @@ const ContactSection = ({
           )}
           {phoneNumber && (
             <Link
-              href={`tel
-                :${phoneNumber}`}
+              href={`tel:${phoneNumber}`}
+              className="text-gray-600 dark:text-gray-400"
             >
               <div className="flex flex-col items-center text-center">
                 <FaPhone className="h-8 w-8 text-gray-600 dark:text-gray-400 mb-2" />
+                {phoneNumber}
               </div>
             </Link>
           )}
