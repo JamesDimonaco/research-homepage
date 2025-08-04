@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { Libre_Franklin } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
+import { ThemeProvider } from "./components/ThemeProvider";
 
 const libre_franklin = Libre_Franklin({
   subsets: ["latin"],
@@ -22,10 +23,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={libre_franklin.variable}>
-        <Header />
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Header />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
