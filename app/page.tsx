@@ -27,13 +27,13 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col">
-      <section className="bg-gray-100 dark:bg-gray-900 py-24">
+      <section className="bg-muted/50 py-24">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">
               {homePage.name}
             </h1>
-            <p className="mt-4 text-lg md:text-xl text-gray-600 dark:text-gray-300">
+            <p className="mt-4 text-lg md:text-xl text-muted-foreground">
               {homePage.bio}
             </p>
           </div>

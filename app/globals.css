@@ -14,3 +14,119 @@ h5,
 h6 {
   font-family: var(--font-libre_franklin), sans-serif;
 }
+
+
+
+@layer base {
+  :root {
+    /* Light mode */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    
+    /* Card colors - subtle blue tint */
+    --card: 210 40% 98%;
+    --card-foreground: 222 47% 11%;
+    
+    /* Primary - Deep blue */
+    --primary: 217 91% 40%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Dark blue for hover states */
+    --primary-dark: 220 47% 20%;
+    
+    /* Secondary - Teal accent */
+    --secondary: 173 80% 40%;
+    --secondary-foreground: 0 0% 100%;
+    
+    /* Tertiary/Accent - Warm amber */
+    --accent: 38 92% 50%;
+    --accent-foreground: 222 47% 11%;
+    
+    /* Muted colors for subtle elements */
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    
+    /* UI elements */
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 40%;
+    
+    /* Chart colors */
+    --chart-1: 217 91% 40%;
+    --chart-2: 173 80% 40%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 262 83% 58%;
+    --chart-5: 339 90% 51%;
+    
+    --radius: 0.5rem;
+  }
+  
+  .dark {
+    /* Dark mode */
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    
+    /* Card colors - darker blue */
+    --card: 217 33% 17%;
+    --card-foreground: 210 40% 98%;
+    
+    /* Primary - Bright blue */
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 11%;
+    
+    /* Dark blue for hover states */
+    --primary-dark: 217 91% 30%;
+    
+    /* Secondary - Bright teal */
+    --secondary: 173 80% 50%;
+    --secondary-foreground: 222 47% 11%;
+    
+    /* Tertiary/Accent - Warm amber */
+    --accent: 38 92% 50%;
+    --accent-foreground: 222 47% 11%;
+    
+    /* Muted colors for subtle elements */
+    --muted: 217 33% 22%;
+    --muted-foreground: 215 20% 65%;
+    
+    /* UI elements */
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 22%;
+    --input: 217 33% 22%;
+    --ring: 217 91% 60%;
+    
+    /* Chart colors */
+    --chart-1: 217 91% 60%;
+    --chart-2: 173 80% 50%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 262 83% 58%;
+    --chart-5: 339 90% 51%;
+  }
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .text-primary-dark {
+    color: hsl(var(--primary-dark));
+  }
+  .hover\:text-primary-dark:hover {
+    color: hsl(var(--primary-dark));
+  }
+}

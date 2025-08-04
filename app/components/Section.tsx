@@ -35,9 +35,9 @@ const Section = ({
                 }`}
               />
             ) : (
-              <div className="w-full h-[400px] bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+              <div className="w-full h-[400px] bg-muted rounded-lg flex items-center justify-center">
                 <svg
-                  className="w-20 h-20 text-gray-400 dark:text-gray-600"
+                  className="w-20 h-20 text-muted-foreground"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -56,8 +56,8 @@ const Section = ({
             )}
           </div>
           <div>
-            <h2 className={`text-3xl md:text-4xl font-bold text-gray-900 dark:text-white ${
-              linkUrl ? "group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300" : ""
+            <h2 className={`text-3xl md:text-4xl font-bold ${
+              linkUrl ? "group-hover:text-primary-dark transition-colors duration-300" : ""
             }`}>
               {title}
               {linkUrl && (
@@ -66,7 +66,7 @@ const Section = ({
                 </span>
               )}
             </h2>
-            <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
+            <p className="mt-4 text-lg text-muted-foreground">
               {text}
             </p>
           </div>
@@ -74,8 +74,8 @@ const Section = ({
       ) : (
         <>
           <div>
-            <h2 className={`text-3xl md:text-4xl font-bold text-gray-900 dark:text-white ${
-              linkUrl ? "group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300" : ""
+            <h2 className={`text-3xl md:text-4xl font-bold ${
+              linkUrl ? "group-hover:text-primary-dark transition-colors duration-300" : ""
             }`}>
               {title}
               {linkUrl && (
@@ -84,7 +84,7 @@ const Section = ({
                 </span>
               )}
             </h2>
-            <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
+            <p className="mt-4 text-lg text-muted-foreground">
               {text}
             </p>
           </div>
@@ -100,9 +100,9 @@ const Section = ({
                 }`}
               />
             ) : (
-              <div className="w-full h-[400px] bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+              <div className="w-full h-[400px] bg-muted rounded-lg flex items-center justify-center">
                 <svg
-                  className="w-20 h-20 text-gray-400 dark:text-gray-600"
+                  className="w-20 h-20 text-muted-foreground"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -127,7 +127,7 @@ const Section = ({
 
   if (linkUrl) {
     return (
-      <section className="bg-white dark:bg-gray-800 py-16">
+      <section className="bg-card py-16">
         <Link
           href={linkUrl}
           target={shouldOpenInNewTab ? "_blank" : undefined}
@@ -143,7 +143,7 @@ const Section = ({
   }
 
   return (
-    <section className="bg-white dark:bg-gray-800 py-16">
+    <section className="bg-card py-16">
       <div className="container mx-auto px-4 md:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         {sectionContent}
       </div>
