@@ -8,6 +8,8 @@ import {
   PageType,
   ContentType,
   CTAType,
+  projectType,
+  conferenceType,
 } from "./types";
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -19,5 +21,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     PageType,
     ContentType,
     CTAType,
+    projectType,
+    conferenceType,
   ],
 };

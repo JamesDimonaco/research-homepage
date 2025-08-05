@@ -5,6 +5,8 @@ import contactInfoType from "./contactInfo";
 import sectionType from "./section";
 import PageType from "./pages";
 import ContentType, { CTAType } from "./content";
+import projectType from "./project";
+import conferenceType from "./conference";
 
 export {
   homePageType,
@@ -15,4 +17,6 @@ export {
   PageType,
   ContentType,
   CTAType,
+  projectType,
+  conferenceType,
 };

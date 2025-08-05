@@ -17,7 +17,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Home, FileText, Wrench, Menu } from "lucide-react";
+import { Home, FileText, Wrench, Menu, Briefcase, Mic } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 
 const Header = () => {
@@ -25,6 +25,8 @@ const Header = () => {
 
   const navItems = [
     { href: "/", label: "Home", icon: Home },
+    { href: "/projects", label: "Projects", icon: Briefcase },
+    { href: "/conferences", label: "Talks", icon: Mic },
     { href: "/publications", label: "Publications", icon: FileText },
     { href: "/tools", label: "Tools", icon: Wrench },
   ];
