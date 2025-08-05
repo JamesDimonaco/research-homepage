@@ -42,11 +42,20 @@ export interface Publication {
   _updatedAt: string;
   _rev: string;
   title: string;
-  publicationDate: string;
-  description: string;
-  googleScholarLink: string;
+  status?: "published" | "in_press" | "accepted" | "under_review" | "preprint" | "submitted" | "other";
+  customStatus?: string;
+  publicationDate?: string;
+  year?: number;
+  journal?: string;
+  authors?: string;
+  description?: string;
+  doi?: string;
+  googleScholarLink?: string;
+  preprintLink?: string;
+  pdfLink?: string;
   linkButtonText?: string;
   image?: SanityImage;
+  featured?: boolean;
 }
 
 export interface Tool {
