@@ -13,13 +13,14 @@ export default defineType({
     }),
     defineField({
       name: "slug",
-      title: "Slug",
+      title: "URL Path",
       type: "slug",
+      description: "This creates the web address for your project. Click 'Generate' to create it from your title. For example: 'Machine Learning Research' becomes 'machine-learning-research'",
       options: {
         source: "title",
         maxLength: 96,
       },
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => Rule.required().error("Please click 'Generate' to create a URL path"),
     }),
     defineField({
       name: "status",

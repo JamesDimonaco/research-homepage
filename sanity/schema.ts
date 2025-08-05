@@ -5,11 +5,12 @@ import {
   publicationType,
   sectionType,
   toolType,
-  PageType,
-  ContentType,
-  CTAType,
   projectType,
   conferenceType,
+  cvType,
+  newsType,
+  researchInterestType,
+  datasetType,
 } from "./types";
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -18,10 +19,11 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     publicationType,
     sectionType,
     toolType,
-    PageType,
-    ContentType,
-    CTAType,
     projectType,
     conferenceType,
+    cvType,
+    newsType,
+    researchInterestType,
+    datasetType,
   ],
 };

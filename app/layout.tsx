@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Libre_Franklin } from "next/font/google";
 import "./globals.css";
-import Header from "./components/Header";
+import HeaderWrapper from "./components/HeaderWrapper";
 import { ThemeProvider } from "./components/ThemeProvider";
 
 const libre_franklin = Libre_Franklin({
@@ -14,7 +14,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Dr. Nicholas Dimonaco",
-  description: "Researcher, Developer, and Educator",
+  description: "Computational Biologist",
 };
 
 export default function RootLayout({
@@ -31,10 +31,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
-          <main className="min-h-screen overflow-x-hidden">
-            {children}
-          </main>
+          <HeaderWrapper />
+          <main className="min-h-screen overflow-x-hidden">{children}</main>
         </ThemeProvider>
       </body>
     </html>

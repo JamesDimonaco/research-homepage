@@ -3,19 +3,25 @@ import { sanityFetch } from "../sanity/lib/client";
 import { urlForImage } from "@/sanity/lib/image";
 import Section from "./components/Section";
 import ContactSection from "./components/ContactSection";
-import { HomePage, ContactInfo } from "./types/sanity";
+import CVSection from "./components/CVSection";
+import ResearchInterestsCloud from "./components/ResearchInterestsCloud";
+import { HomePage, ContactInfo, CV, ResearchInterest } from "./types/sanity";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 
 const query = `*[_type == "homePage"][0]`;
 const contactQuery = `*[_type == "contactInfo"][0]`;
+const cvQuery = `*[_type == "cv" && isPublic == true] | order(isPrimary desc, order asc, lastUpdated desc)`;
+const interestsQuery = `*[_type == "researchInterest" && active == true] | order(weight desc, order asc)`;
 
 export default async function Home() {
   const homePage = await sanityFetch<HomePage>({ query });
   const contactInfo = await sanityFetch<ContactInfo>({
     query: contactQuery,
   });
+  const cvs = await sanityFetch<CV[]>({ query: cvQuery });
+  const interests = await sanityFetch<ResearchInterest[]>({ query: interestsQuery });
   const image = homePage.image ? urlForImage(homePage.image) : null;
 
   const Sections = homePage.sections?.map((section, index) => (
@@ -96,6 +102,8 @@ export default async function Home() {
         </div>
       </section>
       {Sections}
+      <ResearchInterestsCloud interests={interests} />
+      <CVSection cvs={cvs} />
       <ContactSection contactInfo={contactInfo} />
     </div>
   );

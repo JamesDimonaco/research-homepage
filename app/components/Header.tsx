@@ -17,19 +17,39 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Home, FileText, Wrench, Menu, Briefcase, Mic } from "lucide-react";
+import { Home, FileText, Wrench, Menu, Briefcase, Mic, Newspaper, Database } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 
-const Header = () => {
+interface ContentCounts {
+  projects: number;
+  conferences: number;
+  publications: number;
+  datasets: number;
+  news: number;
+  tools: number;
+}
+
+interface HeaderProps {
+  contentCounts: ContentCounts;
+}
+
+const Header = ({ contentCounts }: HeaderProps) => {
   const [open, setOpen] = useState(false);
 
-  const navItems = [
-    { href: "/", label: "Home", icon: Home },
-    { href: "/projects", label: "Projects", icon: Briefcase },
-    { href: "/conferences", label: "Talks", icon: Mic },
-    { href: "/publications", label: "Publications", icon: FileText },
-    { href: "/tools", label: "Tools", icon: Wrench },
+  const allNavItems = [
+    { href: "/", label: "Home", icon: Home, key: "home", alwaysShow: true },
+    { href: "/projects", label: "Projects", icon: Briefcase, key: "projects" },
+    { href: "/conferences", label: "Talks", icon: Mic, key: "conferences" },
+    { href: "/publications", label: "Publications", icon: FileText, key: "publications" },
+    { href: "/datasets", label: "Data", icon: Database, key: "datasets" },
+    { href: "/news", label: "News", icon: Newspaper, key: "news" },
+    { href: "/tools", label: "Tools", icon: Wrench, key: "tools" },
   ];
+
+  // Filter nav items based on content counts
+  const navItems = allNavItems.filter(item => 
+    item.alwaysShow || contentCounts[item.key as keyof ContentCounts] > 0
+  );
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
