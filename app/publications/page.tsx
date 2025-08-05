@@ -1,17 +1,21 @@
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlForImage } from "@/sanity/lib/image";
-import Image from "next/image";
 import Link from "next/link";
-import { Publication } from "../types/sanity";
+import { Publication, ContactInfo } from "../types/sanity";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, FileText, Users, ExternalLink, Download } from "lucide-react";
+import { PublicationImage } from "../components/PublicationImage";
 
-const query = `*[_type == "publication"] | order(featured desc, year desc, publicationDate desc)`;
+const publicationsQuery = `*[_type == "publication"] | order(featured desc, year desc, publicationDate desc)`;
+const contactQuery = `*[_type == "contactInfo"][0]`;
 
 export default async function Publications() {
-  const publications = await sanityFetch<Publication[]>({ query });
+  const [publications, contactInfo] = await Promise.all([
+    sanityFetch<Publication[]>({ query: publicationsQuery }),
+    sanityFetch<ContactInfo>({ query: contactQuery })
+  ]);
 
   const getStatusBadge = (publication: Publication) => {
     if (!publication.status) return null;
@@ -57,9 +61,18 @@ export default async function Publications() {
   return (
     <main className="bg-background py-24 min-h-screen">
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
           Publications
         </h1>
+        <p className="text-lg text-muted-foreground mb-8">
+          This is a selection of publications. For a complete list, please see my {contactInfo?.googleScholar ? (
+            <Link href={contactInfo.googleScholar} target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">
+              Google Scholar
+            </Link>
+          ) : (
+            "Google Scholar"
+          )} profile.
+        </p>
         <div className="grid grid-cols-1 gap-8">
           {publications.map((publication) => {
             const image = publication.image
@@ -177,12 +190,10 @@ export default async function Publications() {
                   </div>
                   {image && (
                     <div className="md:w-[300px] p-6">
-                      <Image
+                      <PublicationImage
                         src={image}
-                        width={300}
-                        height={300}
                         alt={publication.title}
-                        className="rounded-lg object-cover w-full h-full"
+                        title={publication.title}
                       />
                     </div>
                   )}
