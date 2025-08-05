@@ -65,7 +65,7 @@ A modern, fully-featured academic profile website builder designed for researche
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/yourusername/research-homepage.git
+   git clone https://github.com/jamesdimonaco/research-homepage.git
    cd research-homepage
    ```
 
