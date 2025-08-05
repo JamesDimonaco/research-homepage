@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { DoiInput } from "../plugins/doi-input";
 
 const publicationType = defineType({
   name: "publication",
@@ -78,7 +79,10 @@ const publicationType = defineType({
       name: "doi",
       title: "DOI",
       type: "string",
-      description: "Digital Object Identifier",
+      description: "Digital Object Identifier - Enter DOI to auto-fill publication details",
+      components: {
+        input: DoiInput,
+      },
     }),
     defineField({
       name: "googleScholarLink",
