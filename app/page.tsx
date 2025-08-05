@@ -44,9 +44,6 @@ export default async function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <div className="space-y-2">
-                <Badge variant="secondary" className="mb-4">
-                  Researcher • Educator • Innovator
-                </Badge>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
                   {homePage.name}
                 </h1>
@@ -54,16 +51,6 @@ export default async function Home() {
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
                 {homePage.bio}
               </p>
-              <div className="flex flex-wrap gap-2 pt-4">
-                <Badge variant="outline" className="text-sm">
-                  <span className="mr-1">📚</span>
-                  Academic Research
-                </Badge>
-                <Badge variant="outline" className="text-sm">
-                  <span className="mr-1">🔬</span>
-                  Scientific Innovation
-                </Badge>
-              </div>
             </div>
             <div className="flex justify-center md:justify-end">
               {image ? (
