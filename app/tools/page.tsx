@@ -3,7 +3,14 @@ import { urlForImage } from "@/sanity/lib/image";
 import Image from "next/image";
 import Link from "next/link";
 import { Tool } from "../types/sanity";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Github } from "lucide-react";
 
@@ -24,12 +31,13 @@ export default async function Tools() {
             return (
               <Card key={index} className="flex flex-col">
                 {image && (
-                  <div className="relative h-48 w-full">
+                  <div className="relative w-full aspect-[4/3]">
                     <Image
                       src={image}
                       alt={tool.name}
                       fill
-                      className="object-cover rounded-t-lg"
+                      className="object-contain rounded-t-lg bg-white"
+                      sizes="(max-width: 768px) 100vw, 33vw"
                     />
                   </div>
                 )}
@@ -37,9 +45,7 @@ export default async function Tools() {
                   <CardTitle>{tool.name}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-1">
-                  <CardDescription>
-                    {tool.description}
-                  </CardDescription>
+                  <CardDescription>{tool.description}</CardDescription>
                 </CardContent>
                 <CardFooter>
                   <Button asChild variant="outline" className="w-full">
