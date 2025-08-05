@@ -257,7 +257,12 @@ export default async function ConferencePage({
                 <div className="space-y-1">
                   <p className="font-medium">{conference.relatedPublication.title}</p>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span>{new Date(conference.relatedPublication.publicationDate).getFullYear()}</span>
+                    {conference.relatedPublication.publicationDate && (
+                      <span>{new Date(conference.relatedPublication.publicationDate).getFullYear()}</span>
+                    )}
+                    {conference.relatedPublication.year && !conference.relatedPublication.publicationDate && (
+                      <span>{conference.relatedPublication.year}</span>
+                    )}
                     {conference.relatedPublication.googleScholarLink && (
                       <Link 
                         href={conference.relatedPublication.googleScholarLink} 

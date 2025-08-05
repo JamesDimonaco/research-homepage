@@ -207,7 +207,12 @@ export default async function ProjectPage({
                     <div key={pub._id} className="space-y-1">
                       <p className="font-medium">{pub.title}</p>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span>{new Date(pub.publicationDate).getFullYear()}</span>
+                        {pub.publicationDate && (
+                          <span>{new Date(pub.publicationDate).getFullYear()}</span>
+                        )}
+                        {pub.year && !pub.publicationDate && (
+                          <span>{pub.year}</span>
+                        )}
                         {pub.googleScholarLink && (
                           <Link 
                             href={pub.googleScholarLink} 
