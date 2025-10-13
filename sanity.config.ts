@@ -28,4 +28,11 @@ export default defineConfig({
     // https://www.sanity.io/docs/the-vision-plugin
     visionTool({ defaultApiVersion: apiVersion }),
   ],
+  vite: (config) => ({
+    ...config,
+    resolve: {
+      ...config.resolve,
+      dedupe: ['@sanity/ui', '@sanity/icons', 'react', 'react-dom', 'styled-components'],
+    },
+  }),
 });
