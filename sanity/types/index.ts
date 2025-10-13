@@ -9,6 +9,7 @@ import cvType from "./cv";
 import newsType from "./news";
 import researchInterestType from "./researchInterest";
 import datasetType from "./dataset";
+import blogType from "./blog";
 
 export {
   homePageType,
@@ -22,4 +23,5 @@ export {
   newsType,
   researchInterestType,
   datasetType,
+  blogType,
 };

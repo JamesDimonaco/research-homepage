@@ -257,3 +257,29 @@ export interface Dataset {
   featured?: boolean;
   order?: number;
 }
+
+export interface Blog {
+  _id: string;
+  _type: "blog";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title: string;
+  slug: {
+    _type: "slug";
+    current: string;
+  };
+  publishedAt: string;
+  excerpt: string;
+  content?: any[];
+  featuredImage?: SanityImage & {
+    alt?: string;
+  };
+  categories?: string[];
+  tags?: string[];
+  author?: string;
+  readingTime?: number;
+  featured?: boolean;
+  draft?: boolean;
+  relatedPosts?: Blog[];
+}

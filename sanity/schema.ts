@@ -11,6 +11,7 @@ import {
   newsType,
   researchInterestType,
   datasetType,
+  blogType,
 } from "./types";
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -25,5 +26,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     newsType,
     researchInterestType,
     datasetType,
+    blogType,
   ],
 };

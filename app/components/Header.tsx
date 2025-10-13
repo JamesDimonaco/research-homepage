@@ -17,7 +17,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Home, FileText, Wrench, Menu, Briefcase, Mic, Newspaper, Database } from "lucide-react";
+import { Home, FileText, Wrench, Menu, Briefcase, Mic, Newspaper, Database, BookOpen } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 
 interface ContentCounts {
@@ -27,6 +27,7 @@ interface ContentCounts {
   datasets: number;
   news: number;
   tools: number;
+  blog: number;
 }
 
 interface HeaderProps {
@@ -42,6 +43,7 @@ const Header = ({ contentCounts }: HeaderProps) => {
     { href: "/conferences", label: "Talks", icon: Mic, key: "conferences" },
     { href: "/publications", label: "Publications", icon: FileText, key: "publications" },
     { href: "/datasets", label: "Data", icon: Database, key: "datasets" },
+    { href: "/blog", label: "Blog", icon: BookOpen, key: "blog" },
     { href: "/news", label: "News", icon: Newspaper, key: "news" },
     { href: "/tools", label: "Tools", icon: Wrench, key: "tools" },
   ];
