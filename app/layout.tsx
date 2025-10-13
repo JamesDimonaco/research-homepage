@@ -4,6 +4,7 @@ import { Libre_Franklin } from "next/font/google";
 import "./globals.css";
 import HeaderWrapper from "./components/HeaderWrapper";
 import { ThemeProvider } from "./components/ThemeProvider";
+import { Analytics } from "@vercel/analytics/next";
 
 const libre_franklin = Libre_Franklin({
   subsets: ["latin"],
@@ -25,6 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${libre_franklin.variable} overflow-x-hidden`}>
+        <Analytics />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

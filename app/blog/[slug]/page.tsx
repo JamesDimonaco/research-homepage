@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import ShareButton from "../../components/ShareButton";
+import ClickableImage from "../../components/ClickableImage";
 import {
   Calendar,
   Tag,
@@ -46,12 +47,11 @@ const portableTextComponents = {
       const imageUrl = urlForImage(value);
       return (
         <figure className="my-8">
-          <div className="relative aspect-video rounded-lg overflow-hidden">
-            <Image
+          <div className="relative aspect-video rounded-lg overflow-hidden cursor-pointer group">
+            <ClickableImage
               src={imageUrl}
               alt={value.alt || "Blog image"}
-              fill
-              className="object-cover"
+              className="h-full w-full"
             />
           </div>
           {value.caption && (
@@ -161,19 +161,12 @@ export default async function BlogPostPage({
       <div className="max-w-4xl mx-auto">
         {imageUrl && (
           <div className="relative h-64 md:h-96 w-full overflow-hidden rounded-xl mb-8">
-            <Image
+            <ClickableImage
               src={imageUrl}
               alt={post.featuredImage?.alt || post.title}
-              fill
-              className="object-cover"
-              priority
+              featured={post.featured}
+              className="h-full w-full"
             />
-            {post.featured && (
-              <Badge className="absolute top-4 right-4 bg-primary/90 backdrop-blur">
-                <Sparkles className="w-3 h-3 mr-1" />
-                Featured
-              </Badge>
-            )}
           </div>
         )}
 
