@@ -1,13 +1,15 @@
 {
-  "name": "academic-homepage-monorepo",
+  "name": "research-homepage-monorepo",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "turbo run dev",
-    "dev:demo": "turbo run dev --filter=@academic-homepage/demo",
-    "sanity:dev": "turbo run sanity:dev --filter=@academic-homepage/demo",
+    "dev:nicholas-dimonaco": "turbo run dev --filter=@research-homepage/nicholas-dimonaco",
+    "dev:template": "turbo run dev --filter=@research-homepage/template",
+    "sanity:dev": "turbo run sanity:dev --filter=@research-homepage/nicholas-dimonaco",
     "build": "turbo run build",
-    "build:demo": "turbo run build --filter=@academic-homepage/demo",
+    "build:nicholas-dimonaco": "turbo run build --filter=@research-homepage/nicholas-dimonaco",
+    "build:template": "turbo run build --filter=@research-homepage/template",
     "start": "turbo run start",
     "lint": "turbo run lint",
     "clean": "turbo run clean && rm -rf node_modules"

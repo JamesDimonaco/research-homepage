@@ -1,32 +1,54 @@
-# Research Homepage 🎓
+# Research Homepage Monorepo
 
-A modern, fully-featured academic profile website builder designed for researchers, professors, and academics. Built with Next.js and Sanity CMS, it provides a beautiful, responsive platform to showcase your academic work, research projects, publications, and more.
+A modern, fully-featured academic profile website builder designed for researchers, professors, and academics. Built with Next.js 15, Sanity CMS, and Turborepo, it provides a beautiful, responsive platform to showcase your academic work, research projects, publications, and more.
 
-![Next.js](https://img.shields.io/badge/Next.js-15.4-black?style=flat-square&logo=next.js)
+![Next.js](https://img.shields.io/badge/Next.js-15.5-black?style=flat-square&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript)
-![Sanity](https://img.shields.io/badge/Sanity-3.0-red?style=flat-square&logo=sanity)
+![Sanity](https://img.shields.io/badge/Sanity-4.0-red?style=flat-square&logo=sanity)
+![Turborepo](https://img.shields.io/badge/Turborepo-2.0-blue?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
-## ✨ Features
+## Overview
 
-### 📚 Comprehensive Academic Sections
+This monorepo contains shared packages and example applications for creating professional academic homepages.
+
+### Apps
+
+| App | Description | Port |
+|-----|-------------|------|
+| `@research-homepage/nicholas-dimonaco` | Example researcher site | 3000 |
+| `@research-homepage/template` | Marketing/showcase site | 3001 |
+
+### Packages
+
+| Package | Description |
+|---------|-------------|
+| `@research-homepage/ui` | Shared shadcn/ui components |
+| `@research-homepage/components` | Domain-specific React components |
+| `@research-homepage/cms` | Sanity CMS schemas, types, and utilities |
+| `@research-homepage/tailwind-config` | Shared Tailwind CSS configuration |
+| `@research-homepage/typescript-config` | Shared TypeScript configuration |
+
+## Features
+
+### Comprehensive Academic Sections
 
 - **Research Projects** - Showcase active and completed projects with funding details, collaborators, and related publications
 - **Conference Talks** - Display keynotes, invited talks, and presentations with embedded videos and slides
-- **Publications** - List your papers with links to Google Scholar
+- **Publications** - List your papers with DOI auto-fill and links to Google Scholar
 - **Datasets** - Share research data with DOI, licenses, and download links
-- **News & Updates** - Blog about research updates, software releases, and announcements
+- **Blog & News** - Blog about research updates, software releases, and announcements
 - **Tools** - Highlight software and tools you've developed
 - **CV/Resume** - Multiple CV versions with automatic download tracking
 
-### 🎨 Beautiful Design
+### Beautiful Design
 
 - **Dark/Light Mode** - Automatic theme switching with system preference detection
 - **Responsive Layout** - Looks perfect on all devices
 - **Modern UI** - Built with shadcn/ui components for a clean, professional look
-- **Accessibility** - WCAG compliant with proper contrast ratios and keyboard navigation
+- **CMS-Driven** - Update your site header name and branding from the CMS
 
-### 🚀 Advanced Features
+### Advanced Features
 
 - **Research Interests Tag Cloud** - Visual representation of your research areas
 - **Smart Navigation** - Header automatically shows/hides sections based on content
@@ -34,142 +56,275 @@ A modern, fully-featured academic profile website builder designed for researche
 - **Fast Performance** - Static generation for lightning-fast page loads
 - **Type Safety** - Full TypeScript support throughout
 
-### 📝 Content Management
-
-- **Sanity CMS** - User-friendly content management system
-- **Rich Text Editing** - Format your content with ease
-- **Image Optimization** - Automatic image processing and optimization
-- **Draft Mode** - Preview content before publishing
-- **Version Control** - Track changes to your CV and documents
-
-## 🛠️ Technology Stack
-
-- **Framework**: [Next.js 15.4](https://nextjs.org/) (App Router)
-- **CMS**: [Sanity v3](https://www.sanity.io/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **UI Components**: [shadcn/ui](https://ui.shadcn.com/)
-- **Type Safety**: [TypeScript](https://www.typescriptlang.org/)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Theme**: [next-themes](https://github.com/pacocoursey/next-themes)
-
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+
-- npm or yarn
-- A Sanity account (free tier available)
+- Node.js >= 18.0.0
+- pnpm 9.0.0+
 
 ### Installation
 
-1. **Clone the repository**
+```bash
+# Clone the repository
+git clone https://github.com/jamesdimonaco/research-homepage.git
+cd research-homepage
 
-   ```bash
-   git clone https://github.com/jamesdimonaco/research-homepage.git
-   cd research-homepage
-   ```
+# Install dependencies
+pnpm install
+```
 
-2. **Install dependencies**
+### Development
 
-   ```bash
-   npm install
-   ```
+```bash
+# Run all apps in development mode
+pnpm dev
 
-3. **Set up environment variables**
+# Run a specific app
+pnpm dev:nicholas-dimonaco
+pnpm dev:template
 
-   Copy `.env.example` to `.env.local` and add your Sanity project details:
+# Run Sanity Studio
+pnpm sanity:dev
+```
 
-   ```env
-   NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
-   NEXT_PUBLIC_SANITY_DATASET=production
-   NEXT_PUBLIC_SANITY_API_VERSION=2024-01-01
-   SANITY_API_TOKEN=your_token
-   ```
+### Build
 
-4. **Initialize Sanity Studio**
+```bash
+# Build all apps
+pnpm build
 
-   ```bash
-   npm run sanity:dev
-   ```
+# Build a specific app
+pnpm build:nicholas-dimonaco
+pnpm build:template
+```
 
-   Visit `http://localhost:3333` to access Sanity Studio and start adding content.
+## Setting Up a New Researcher Site
 
-5. **Run the development server**
+### 1. Create a Sanity Project
 
-   ```bash
-   npm run dev
-   ```
+1. Go to [sanity.io](https://www.sanity.io/) and create a new project
+2. Note your **Project ID** and **Dataset** name (usually "production")
 
-   Open [http://localhost:3000](http://localhost:3000) to see your site.
+### 2. Configure Environment Variables
 
-### Deployment
+Create a `.env` file in your app directory:
 
-#### Vercel (Recommended)
+```env
+NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
+NEXT_PUBLIC_SANITY_DATASET=production
+NEXT_PUBLIC_SANITY_API_VERSION=2024-06-10
+SANITY_API_TOKEN=your_token  # Optional, for write operations
+```
 
-1. Push your code to GitHub
-2. Import your repository on [Vercel](https://vercel.com)
-3. Add your environment variables
-4. Deploy!
+### 3. Deploy Sanity Schema
 
-#### Other Platforms
+```bash
+# From your app directory
+npx sanity deploy
+```
 
-The site can be deployed to any platform that supports Next.js:
+### 4. Configure Components
 
+In your app's `layout.tsx`, configure the components package:
+
+```typescript
+import { configureComponents, ThemeProvider } from "@research-homepage/components";
+import { urlForImage } from "@/sanity/lib/image";
+
+// Configure components with your app's urlForImage function
+configureComponents({
+  urlForImage,
+});
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+### 5. Set Up Sanity Client
+
+Create `sanity/lib/client.ts`:
+
+```typescript
+import { createSanityClient } from "@research-homepage/cms";
+
+const { client, sanityFetch } = createSanityClient({
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
+  apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION,
+  useCdn: true,
+});
+
+export { client, sanityFetch };
+```
+
+### 6. Use Shared Schemas
+
+In your `sanity/schema.ts`:
+
+```typescript
+import { allSchemas } from "@research-homepage/cms";
+
+export const schema = {
+  types: allSchemas,
+};
+```
+
+## Content Structure
+
+### Content Types
+
+| Type | Description |
+|------|-------------|
+| `homePage` | Main homepage configuration (singleton) |
+| `publication` | Academic publications with DOI support |
+| `project` | Research projects with funding details |
+| `conference` | Talks and presentations |
+| `dataset` | Research datasets |
+| `tool` | Software tools and packages |
+| `news` | News posts and updates |
+| `blog` | Blog posts with rich content |
+| `cv` | CV/Resume documents |
+| `contactInfo` | Contact information (singleton) |
+| `researchInterest` | Research interests for tag cloud |
+
+### Available Components
+
+**Cards:**
+- `BlogCard` - Blog post preview card
+- `ProjectCard` - Research project card
+- `NewsCard` - News item card
+- `ConferenceCard` - Conference/talk card
+- `DatasetCard` - Dataset card
+
+**Sections:**
+- `Section` - Generic homepage section
+- `ContactSection` - Contact information display
+- `CVSection` - CV download section
+- `ResearchInterestsCloud` - Interactive tag cloud
+
+**Navigation:**
+- `Header` - Site header with navigation
+- `ThemeProvider` - Dark/light mode provider
+- `ThemeToggle` - Theme toggle button
+
+**Media:**
+- `ClickableImage` - Zoomable image
+- `PublicationImage` - Publication figure with zoom
+- `ShareButton` - Social sharing button
+
+## Customization
+
+### Tailwind CSS
+
+Extend the base config in your app's `tailwind.config.ts`:
+
+```typescript
+import baseConfig from "@research-homepage/tailwind-config";
+
+export default {
+  ...baseConfig,
+  content: [
+    "./app/**/*.{js,ts,jsx,tsx}",
+    "../../packages/ui/**/*.{js,ts,jsx,tsx}",
+    "../../packages/components/**/*.{js,ts,jsx,tsx}",
+  ],
+};
+```
+
+### Theming
+
+Override CSS variables in your app's `globals.css`:
+
+```css
+:root {
+  --primary: 220 90% 50%;  /* Custom primary color */
+}
+```
+
+## Deployment
+
+### Vercel (Recommended)
+
+1. Connect your repository to Vercel
+2. Configure environment variables in Vercel dashboard
+3. Set the root directory to `apps/your-app-name`
+4. Deploy
+
+### Other Platforms
+
+The apps are standard Next.js applications and can be deployed to any platform that supports Next.js:
 - Netlify
 - AWS Amplify
 - Google Cloud Run
 - Self-hosted with Node.js
 
-## 📖 Usage Guide
+## Project Structure
 
-### Adding Content
+```
+research-homepage/
+├── apps/
+│   ├── nicholas-dimonaco/     # Example researcher site
+│   │   ├── app/               # Next.js App Router
+│   │   ├── sanity/            # Sanity config
+│   │   └── public/            # Static assets
+│   └── template/              # Marketing site
+├── packages/
+│   ├── ui/                    # shadcn/ui components
+│   ├── components/            # Domain components
+│   │   ├── cards/
+│   │   ├── sections/
+│   │   ├── navigation/
+│   │   └── media/
+│   ├── cms/                   # Sanity schemas and utilities
+│   │   ├── schemas/
+│   │   ├── lib/
+│   │   └── types/
+│   ├── tailwind-config/
+│   └── typescript-config/
+├── turbo.json
+├── pnpm-workspace.yaml
+└── package.json
+```
 
-1. **Access Sanity Studio** at `/studio` or `http://localhost:3333` in development
-2. **Create your homepage** - Add your name, bio, and profile image
-3. **Add sections** - Create sections for your homepage with images and links
-4. **Add your research** - Projects, publications, talks, and datasets
-5. **Customize** - Update contact info, add news items, upload your CV
+## Commands Reference
 
-### Customization
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start all apps in development |
+| `pnpm build` | Build all apps for production |
+| `pnpm lint` | Run ESLint on all packages |
+| `pnpm clean` | Remove all build artifacts |
+| `pnpm dev:nicholas-dimonaco` | Start the researcher site |
+| `pnpm dev:template` | Start the marketing site |
 
-- **Colors**: Edit `app/globals.css` to change the color scheme
-- **Fonts**: Update font imports in `app/layout.tsx`
-- **Components**: All components are in `app/components/` for easy customization
-- **Content Types**: Add new schemas in `sanity/types/`
-
-## 🤝 Getting Help
-
-### Free & Open Source
-
-This project is completely free and open source under the MIT license. You can:
-
-- Use it for your personal academic website
-- Modify it to suit your needs
-- Host it anywhere you like
-- Contribute improvements back to the community
-
-### Professional Support
-
-Need help setting up, customizing, or adding new features? I offer professional services for:
-
-- Initial setup and deployment
-- Custom feature development
-- Design customization
-- Ongoing maintenance and updates
-- Training on content management
-
-**Contact**: [james@dimonaco.co.uk](mailto:james@dimonaco.co.uk)
-
-## 🌟 Examples
-
-Check out these researchers using Research Homepage:
+## Examples
 
 - [Dr. Nicholas Dimonaco](https://nicholas.dimonaco.co.uk/) - Computational Biology
 - [Your site here!] - Submit a PR to add your site
 
-## 🤝 Contributing
+## Getting Help
 
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+### Free & Open Source
+
+This project is completely free and open source under the MIT license.
+
+### Professional Support
+
+Need help setting up, customizing, or adding new features? Contact: [james@dimonaco.co.uk](mailto:james@dimonaco.co.uk)
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
@@ -177,19 +332,16 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
-- Built with [Next.js](https://nextjs.org/) and [Sanity](https://www.sanity.io/)
+- Built with [Next.js](https://nextjs.org/), [Sanity](https://www.sanity.io/), and [Turborepo](https://turbo.build/)
 - UI components from [shadcn/ui](https://ui.shadcn.com/)
 - Icons from [Lucide](https://lucide.dev/)
-- Deployed on [Vercel](https://vercel.com/)
 
 ---
 
 **Made with ❤️ for the academic community**
-
-_If you find this project helpful, please consider giving it a ⭐ on GitHub!_
