@@ -1,18 +1,25 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: [
-    "@research-homepage/ui",
-    "@research-homepage/components",
-    "@research-homepage/cms",
-  ],
   images: {
     remotePatterns: [
       {
         protocol: "https",
         hostname: "cdn.sanity.io",
+        port: "",
       },
     ],
   },
+  // Silence warnings about Sanity dependencies
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
+  transpilePackages: [
+    "@research-homepage/ui",
+    "@research-homepage/cms",
+    "@research-homepage/components",
+  ],
 };
 
 export default nextConfig;

@@ -5,10 +5,12 @@
   "scripts": {
     "dev": "turbo run dev",
     "dev:nicholas-dimonaco": "turbo run dev --filter=@research-homepage/nicholas-dimonaco",
+    "dev:demo": "turbo run dev --filter=@research-homepage/demo",
     "dev:template": "turbo run dev --filter=@research-homepage/template",
     "sanity:dev": "turbo run sanity:dev --filter=@research-homepage/nicholas-dimonaco",
     "build": "turbo run build",
     "build:nicholas-dimonaco": "turbo run build --filter=@research-homepage/nicholas-dimonaco",
+    "build:demo": "turbo run build --filter=@research-homepage/demo",
     "build:template": "turbo run build --filter=@research-homepage/template",
     "start": "turbo run start",
     "lint": "turbo run lint",

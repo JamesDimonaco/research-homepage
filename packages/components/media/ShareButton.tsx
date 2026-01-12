@@ -5,11 +5,11 @@ import { Share2 } from "lucide-react";
 
 interface ShareButtonProps {
   title: string;
-  text: string;
+  text?: string;
   url?: string;
 }
 
-export default function ShareButton({ title, text, url }: ShareButtonProps) {
+export default function ShareButton({ title, text = "", url }: ShareButtonProps) {
   const handleShare = () => {
     const shareUrl = url || (typeof window !== "undefined" ? window.location.href : "");
 
