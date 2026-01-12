@@ -10,12 +10,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@portabletext/react": "^3.2.4",
     "@research-homepage/cms": "workspace:*",
     "@research-homepage/components": "workspace:*",
     "@research-homepage/ui": "workspace:*",
     "@sanity/vision": "^4.22.0",
     "@vercel/analytics": "^1.6.1",
     "dotenv": "^16.6.1",
+    "lucide-react": "^0.536.0",
     "next": "15.5.9",
     "next-sanity": "^11.6.12",
     "react": "^18.3.1",
