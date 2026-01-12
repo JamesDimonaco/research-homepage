@@ -12,8 +12,7 @@ import {
   Calendar,
   Tag,
   ArrowLeft,
-  Clock,
-  Sparkles
+  Clock
 } from "lucide-react";
 import { PortableText } from "@portabletext/react";
 
