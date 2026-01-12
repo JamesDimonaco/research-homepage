@@ -1,0 +1,43 @@
+{
+  "name": "@research-homepage/nicholas-dimonaco",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "sanity:dev": "sanity dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@portabletext/react": "^3.2.4",
+    "@research-homepage/cms": "workspace:*",
+    "@research-homepage/components": "workspace:*",
+    "@research-homepage/ui": "workspace:*",
+    "@sanity/icons": "^3.7.4",
+    "@sanity/ui": "^3.1.11",
+    "@sanity/vision": "^4.22.0",
+    "@vercel/analytics": "^1.6.1",
+    "dotenv": "^16.6.1",
+    "lucide-react": "^0.536.0",
+    "next": "15.5.9",
+    "next-sanity": "^11.6.12",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.5.0",
+    "sanity": "^4.22.0",
+    "styled-components": "^6.3.5"
+  },
+  "devDependencies": {
+    "@research-homepage/tailwind-config": "workspace:*",
+    "@research-homepage/typescript-config": "workspace:*",
+    "@types/node": "^20.19.28",
+    "@types/react": "^18.3.27",
+    "@types/react-dom": "^18.3.7",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "15.5.9",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.9.3"
+  }
+}
