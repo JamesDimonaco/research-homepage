@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlForImage } from "@/sanity/lib/image";
 import Link from "next/link";
@@ -8,8 +9,21 @@ import { Badge } from "@research-homepage/ui";
 import { Calendar, FileText, Users, ExternalLink, Download } from "lucide-react";
 import { PublicationImage } from "@research-homepage/components";
 
+export const metadata: Metadata = {
+  title: "Publications",
+  description:
+    "Peer-reviewed publications, preprints, and in-press articles by Dr. Nicholas Dimonaco in computational biology, genomics, and bioinformatics.",
+  openGraph: {
+    title: "Publications | Dr. Nicholas Dimonaco",
+    description:
+      "Peer-reviewed publications and preprints in computational biology, genomics, and bioinformatics.",
+  },
+};
+
 const publicationsQuery = `*[_type == "publication"] | order(featured desc, year desc, publicationDate desc)`;
 const contactQuery = `*[_type == "contactInfo"][0]`;
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://nicholas.dimonaco.co.uk";
 
 export default async function Publications() {
   const [publications, contactInfo] = await Promise.all([
@@ -58,8 +72,33 @@ export default async function Publications() {
     return "View Details";
   };
 
+  // Build ScholarlyArticle JSON-LD for published works
+  const scholarlyArticlesJsonLd = {
+    "@context": "https://schema.org",
+    "@graph": publications
+      .filter((p) => p.status === "published" || p.status === "preprint")
+      .map((p) => ({
+        "@type": "ScholarlyArticle",
+        headline: p.title,
+        ...(p.authors && { author: p.authors }),
+        ...(p.journal && { publisher: { "@type": "Organization", name: p.journal } }),
+        ...(p.year && { datePublished: String(p.year) }),
+        ...(p.publicationDate && { datePublished: p.publicationDate }),
+        ...(p.description && { abstract: p.description }),
+        ...(p.doi && { identifier: `https://doi.org/${p.doi}` }),
+        ...(p.googleScholarLink && { url: p.googleScholarLink }),
+        ...(p.pdfLink && { url: p.pdfLink }),
+        isPartOf: { "@type": "WebPage", url: `${siteUrl}/publications` },
+      })),
+  };
+
   return (
-    <main className="bg-background py-24 min-h-screen">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(scholarlyArticlesJsonLd) }}
+      />
+      <main className="bg-background py-16 min-h-screen">
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
           Publications
@@ -204,5 +243,6 @@ export default async function Publications() {
         </div>
       </div>
     </main>
+    </>
   );
 }

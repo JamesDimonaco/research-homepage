@@ -10,14 +10,34 @@ const contactQuery = `*[_type == "contactInfo"][0]`;
 const cvQuery = `*[_type == "cv" && isPublic == true] | order(isPrimary desc, order asc, lastUpdated desc)`;
 const interestsQuery = `*[_type == "researchInterest" && active == true] | order(weight desc, order asc)`;
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://nicholas.dimonaco.co.uk";
+
 export default async function Home() {
-  const homePage = await sanityFetch<HomePage>({ query });
-  const contactInfo = await sanityFetch<ContactInfo>({
-    query: contactQuery,
-  });
-  const cvs = await sanityFetch<CV[]>({ query: cvQuery });
-  const interests = await sanityFetch<ResearchInterest[]>({ query: interestsQuery });
+  // Fetch all data in parallel — avoids sequential waterfall on cache miss
+  const [homePage, contactInfo, cvs, interests] = await Promise.all([
+    sanityFetch<HomePage>({ query }),
+    sanityFetch<ContactInfo>({ query: contactQuery }),
+    sanityFetch<CV[]>({ query: cvQuery }),
+    sanityFetch<ResearchInterest[]>({ query: interestsQuery }),
+  ]);
   const image = homePage.image ? urlForImage(homePage.image) : null;
+
+  // Build sameAs array from contactInfo links present in CMS
+  const sameAs = [
+    contactInfo?.googleScholar,
+    contactInfo?.linkedin,
+    contactInfo?.github,
+    contactInfo?.X,
+  ].filter(Boolean);
+
+  const personJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: homePage?.name || "Dr. Nicholas Dimonaco",
+    jobTitle: "Computational Biologist",
+    url: siteUrl,
+    ...(sameAs.length > 0 && { sameAs }),
+  };
 
   const Sections = homePage.sections?.map((section, index) => (
     <div key={index}>
@@ -43,7 +63,11 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col overflow-x-hidden">
-      <section className="relative py-16 md:py-24 lg:py-32 overflow-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+      />
+      <section className="relative py-16 md:py-16 lg:py-24 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
         <div className="container mx-auto px-4 md:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">

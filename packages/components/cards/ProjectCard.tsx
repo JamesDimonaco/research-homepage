@@ -26,7 +26,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   };
 
   return (
-    <Card className="h-full hover:shadow-lg transition-all duration-300 group">
+    <Card className="h-full hover:shadow-lg transition-all duration-300 group border-l-[3px] border-l-teal-500 dark:border-l-teal-400">
       <CardHeader className="space-y-4">
         {imageUrl && (
           <div className="relative h-48 w-full overflow-hidden rounded-lg">

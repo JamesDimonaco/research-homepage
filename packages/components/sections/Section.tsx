@@ -109,7 +109,7 @@ const Section = ({
 
   if (linkUrl) {
     return (
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-16">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <Link
             href={linkUrl}

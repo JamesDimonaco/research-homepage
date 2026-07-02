@@ -16,3 +16,97 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .font-serif {
+    font-family: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  }
+
+  /* Ruled-paper backdrop for the hero — faint horizontal lines, like a notebook */
+  .paper-rules {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 31px,
+      hsl(var(--border) / 0.35) 31px,
+      hsl(var(--border) / 0.35) 32px
+    );
+    mask-image: linear-gradient(to bottom, black 30%, transparent 95%);
+    -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 95%);
+  }
+
+  /* Highlighter sweep — amber, slightly skewed, animates in on load */
+  .highlight {
+    position: relative;
+    white-space: nowrap;
+  }
+  .highlight::before {
+    content: "";
+    position: absolute;
+    inset: 0.08em -0.15em -0.02em -0.15em;
+    background: hsl(var(--accent) / 0.28);
+    transform: skew(-8deg) scaleX(0);
+    transform-origin: left center;
+    animation: highlight-sweep 0.7s cubic-bezier(0.25, 1, 0.35, 1) 0.9s forwards;
+    z-index: -1;
+    border-radius: 0.1em;
+  }
+
+  @keyframes highlight-sweep {
+    to {
+      transform: skew(-8deg) scaleX(1);
+    }
+  }
+
+  /* Staggered load reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: reveal-up 0.65s cubic-bezier(0.2, 0.8, 0.25, 1) forwards;
+  }
+  .reveal-1 { animation-delay: 0.05s; }
+  .reveal-2 { animation-delay: 0.18s; }
+  .reveal-3 { animation-delay: 0.32s; }
+  .reveal-4 { animation-delay: 0.46s; }
+  .reveal-5 { animation-delay: 0.6s; }
+
+  @keyframes reveal-up {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Nav link underline slide */
+  .nav-link {
+    position: relative;
+  }
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    height: 1px;
+    width: 100%;
+    background: hsl(var(--accent));
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform 0.25s ease;
+  }
+  .nav-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+    .highlight::before {
+      transform: skew(-8deg) scaleX(1);
+      animation: none;
+    }
+  }
+}

@@ -45,8 +45,8 @@ export default function NewsCard({ news, featured = false }: NewsCardProps) {
 
   const CardComponent = featured ? "div" : Card;
   const cardClasses = featured
-    ? "h-full hover:shadow-lg transition-all duration-300 group border rounded-lg overflow-hidden bg-card"
-    : "h-full hover:shadow-lg transition-all duration-300 group";
+    ? "h-full hover:shadow-lg transition-all duration-300 group border rounded-lg overflow-hidden bg-card border-l-[3px] border-l-rose-500 dark:border-l-rose-400"
+    : "h-full hover:shadow-lg transition-all duration-300 group border-l-[3px] border-l-rose-500 dark:border-l-rose-400";
 
   return (
     <CardComponent className={cardClasses}>
