@@ -7,6 +7,7 @@
 import { visionTool } from "@sanity/vision";
 import { defineConfig, type Config } from "sanity";
 import { structureTool } from "sanity/structure";
+import { orcidImportTool } from "@research-homepage/cms";
 
 // Go to https://www.sanity.io/docs/api-versioning to learn how API versioning works
 const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION || "2024-06-10";
@@ -24,6 +25,8 @@ const config: Config = defineConfig({
   schema,
   plugins: [
     structureTool(),
+    // "Import from ORCID" tool — bulk-imports publications from OpenAlex as drafts
+    orcidImportTool(),
     // Vision is a tool that lets you query your content with GROQ in the studio
     // https://www.sanity.io/docs/the-vision-plugin
     visionTool({ defaultApiVersion: apiVersion }),
