@@ -1,28 +1,29 @@
 import { NextResponse } from "next/server";
 
+// The DOI lookup is only consumed by the Sanity Studio (same origin) via the DOI
+// input plugin. Reflect the request origin only when it matches this app's own
+// origin — no wildcard, so the route can't be used as an anonymous cross-origin
+// proxy/amplifier against Crossref.
+function corsHeaders(request: Request): Record<string, string> {
+  const origin = request.headers.get("origin");
+  const self = new URL(request.url).origin;
+  const headers: Record<string, string> = {
+    "Access-Control-Allow-Methods": "GET, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    Vary: "Origin",
+  };
+  if (origin && origin === self) {
+    headers["Access-Control-Allow-Origin"] = origin;
+  }
+  return headers;
+}
+
 export async function OPTIONS(request: Request) {
-  return new Response(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
-  });
+  return new Response(null, { status: 200, headers: corsHeaders(request) });
 }
 
 export async function GET(request: Request) {
-  // Add CORS headers
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-  };
-
-  // Handle preflight requests
-  if (request.method === 'OPTIONS') {
-    return new Response(null, { status: 200, headers });
-  }
+  const headers = corsHeaders(request);
   const { searchParams } = new URL(request.url);
   const doi = searchParams.get("doi");
 
@@ -34,13 +35,16 @@ export async function GET(request: Request) {
   const cleanDoi = doi.replace(/^https?:\/\/doi\.org\//, "");
 
   try {
-    // Use Crossref API to fetch publication details
+    // Use Crossref API to fetch publication details (host is fixed; the DOI is
+    // encodeURIComponent'd into the path so it can't redirect to another host).
     const response = await fetch(
       `https://api.crossref.org/works/${encodeURIComponent(cleanDoi)}`,
       {
         headers: {
           "User-Agent": "Research-Homepage/1.0 (https://github.com/jamesdimonaco/research-homepage)",
         },
+        redirect: "error",
+        signal: AbortSignal.timeout(10000),
       }
     );
 
@@ -83,10 +87,10 @@ export async function GET(request: Request) {
 
     return NextResponse.json(publicationData, { headers });
   } catch (error) {
+    // Log the internal detail server-side only; don't leak it to the caller.
     console.error("Error fetching DOI details:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { error: "Failed to fetch DOI details", details: errorMessage },
+      { error: "Failed to fetch DOI details" },
       { status: 500, headers }
     );
   }
@@ -97,19 +101,19 @@ function determineStatus(work: any): string {
   if (work.subtype === "preprint" || work.type === "posted-content") {
     return "preprint";
   }
-  
+
   // Check if published
   if (work.published || work["journal-issue"]) {
     return "published";
   }
-  
+
   // Default to preprint for bioRxiv/arXiv/etc
   const preprintServers = ["biorxiv", "arxiv", "medrxiv", "chemrxiv", "ssrn"];
   const publisher = work.publisher?.toLowerCase() || "";
   if (preprintServers.some(server => publisher.includes(server))) {
     return "preprint";
   }
-  
+
   return "published";
 }
 

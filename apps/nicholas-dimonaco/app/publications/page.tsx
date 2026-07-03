@@ -3,6 +3,7 @@ import { sanityFetch } from "@/sanity/lib/client";
 import { urlForImage } from "@/sanity/lib/image";
 import Link from "next/link";
 import type { Publication, ContactInfo } from "@research-homepage/cms";
+import { serializeJsonLd, safeUrl } from "@research-homepage/cms";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@research-homepage/ui";
 import { Button } from "@research-homepage/ui";
 import { Badge } from "@research-homepage/ui";
@@ -26,10 +27,21 @@ const contactQuery = `*[_type == "contactInfo"][0]`;
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://nicholas.dimonaco.co.uk";
 
 export default async function Publications() {
-  const [publications, contactInfo] = await Promise.all([
+  const [rawPublications, contactInfo] = await Promise.all([
     sanityFetch<Publication[]>({ query: publicationsQuery }),
     sanityFetch<ContactInfo>({ query: contactQuery })
   ]);
+
+  // Scheme-sanitise all CMS/imported URLs up front so no `javascript:` (etc.)
+  // value can reach an href or the JSON-LD graph. safeUrl() returns undefined
+  // for unsafe schemes, which the existing truthy guards already skip.
+  const publications = rawPublications.map((p) => ({
+    ...p,
+    pdfLink: safeUrl(p.pdfLink),
+    preprintLink: safeUrl(p.preprintLink),
+    googleScholarLink: safeUrl(p.googleScholarLink),
+  }));
+  const contactGoogleScholar = safeUrl(contactInfo?.googleScholar);
 
   const getStatusBadge = (publication: Publication) => {
     if (!publication.status) return null;
@@ -96,7 +108,7 @@ export default async function Publications() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(scholarlyArticlesJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(scholarlyArticlesJsonLd) }}
       />
       <main className="bg-background py-16 min-h-screen">
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
@@ -104,8 +116,8 @@ export default async function Publications() {
           Publications
         </h1>
         <p className="text-lg text-muted-foreground mb-8">
-          This is a selection of publications. For a complete list, please see my {contactInfo?.googleScholar ? (
-            <Link href={contactInfo.googleScholar} target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">
+          This is a selection of publications. For a complete list, please see my {contactGoogleScholar ? (
+            <Link href={contactGoogleScholar} target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">
               Google Scholar
             </Link>
           ) : (

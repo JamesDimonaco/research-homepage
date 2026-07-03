@@ -13,6 +13,8 @@
  * needs a server route to hold ORCID_CLIENT_SECRET. See the growth-plan TODOs.
  */
 
+import { safeUrl } from "../../lib/security";
+
 export interface MappedWork {
   /** Stable key for dedupe/selection — normalised DOI, or an openalex id fallback. */
   key: string;
@@ -75,24 +77,35 @@ function deriveStatus(work: any): "published" | "preprint" {
   return "published";
 }
 
+/** Strip HTML tags/angle-brackets from imported free-text (defence in depth —
+ *  the render layer also escapes, but imported metadata is fully attacker-
+ *  controlled so we neutralise it at the source too). */
+function clean(value?: string | null): string | undefined {
+  if (typeof value !== "string") return undefined;
+  const out = value.replace(/<[^>]*>/g, "").replace(/[<>]/g, "").trim();
+  return out || undefined;
+}
+
 function mapWork(work: any): MappedWork | null {
-  const title: string | undefined = work?.title ?? work?.display_name;
+  const title = clean(work?.title ?? work?.display_name);
   if (!title) return null;
 
   const doi = normaliseDoi(work?.doi);
   const authors: string | undefined = Array.isArray(work?.authorships)
-    ? work.authorships
-        .map((a: any) => a?.author?.display_name)
-        .filter(Boolean)
-        .join(", ") || undefined
+    ? clean(
+        work.authorships
+          .map((a: any) => a?.author?.display_name)
+          .filter(Boolean)
+          .join(", "),
+      )
     : undefined;
 
-  const oa = work?.best_oa_location ?? work?.open_access;
-  const oaUrl: string | undefined =
+  const oaUrl = safeUrl(
     work?.best_oa_location?.pdf_url ??
-    work?.open_access?.oa_url ??
-    work?.primary_location?.pdf_url ??
-    undefined;
+      work?.open_access?.oa_url ??
+      work?.primary_location?.pdf_url ??
+      undefined,
+  );
 
   const status = deriveStatus(work);
 
@@ -102,9 +115,9 @@ function mapWork(work: any): MappedWork | null {
     doi,
     year: typeof work?.publication_year === "number" ? work.publication_year : undefined,
     publicationDate: work?.publication_date || undefined,
-    journal: work?.primary_location?.source?.display_name || undefined,
+    journal: clean(work?.primary_location?.source?.display_name),
     authors,
-    description: abstractFromInverted(work?.abstract_inverted_index),
+    description: clean(abstractFromInverted(work?.abstract_inverted_index)),
     status,
     // Only surface a preprint link when it actually is one; otherwise treat as PDF.
     preprintLink: status === "preprint" ? oaUrl : undefined,
@@ -139,7 +152,10 @@ export async function fetchWorksByOrcid(
       `&per-page=200&cursor=${encodeURIComponent(cursor)}` +
       `&sort=publication_date:desc&mailto=${encodeURIComponent(mailto)}`;
 
-    const res = await fetch(url);
+    const res = await fetch(url, {
+      redirect: "follow",
+      signal: AbortSignal.timeout(15000),
+    });
     if (!res.ok) {
       throw new Error(
         res.status === 429

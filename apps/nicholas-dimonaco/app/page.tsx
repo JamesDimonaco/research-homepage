@@ -4,6 +4,7 @@ import { urlForImage } from "@/sanity/lib/image";
 import { Section, ContactSection, CVSection, ResearchInterestsCloud } from "@research-homepage/components";
 import { Card, CardContent, Separator } from "@research-homepage/ui";
 import type { HomePage, ContactInfo, CV, ResearchInterest } from "@research-homepage/cms";
+import { serializeJsonLd } from "@research-homepage/cms";
 
 const query = `*[_type == "homePage"][0]`;
 const contactQuery = `*[_type == "contactInfo"][0]`;
@@ -65,7 +66,7 @@ export default async function Home() {
     <div className="flex flex-col overflow-x-hidden">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(personJsonLd) }}
       />
       <section className="relative py-16 md:py-16 lg:py-24 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
