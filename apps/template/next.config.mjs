@@ -1,4 +1,17 @@
 /** @type {import('next').NextConfig} */
+
+// Baseline security headers. SAMEORIGIN / frame-ancestors 'self' because the
+// embedded Sanity Studio at /studio frames itself.
+const securityHeaders = [
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "X-Frame-Options", value: "SAMEORIGIN" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  {
+    key: "Content-Security-Policy",
+    value: "frame-ancestors 'self'; object-src 'none'; base-uri 'self';",
+  },
+];
+
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -20,6 +33,9 @@ const nextConfig = {
     "@research-homepage/cms",
     "@research-homepage/components",
   ],
+  async headers() {
+    return [{ source: "/:path*", headers: securityHeaders }];
+  },
 };
 
 export default nextConfig;

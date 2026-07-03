@@ -1,27 +1,56 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
+// The DOI lookup is only consumed by the Sanity Studio (same origin) via the DOI
+// input plugin. Reflect the request origin only when it matches this app's own
+// origin — no wildcard, so the route can't be used as an anonymous cross-origin
+// proxy/amplifier against Crossref.
+function corsHeaders(request: Request): Record<string, string> {
+  const origin = request.headers.get("origin");
+  const self = new URL(request.url).origin;
+  const headers: Record<string, string> = {
+    "Access-Control-Allow-Methods": "GET, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    Vary: "Origin",
+  };
+  if (origin && origin === self) {
+    headers["Access-Control-Allow-Origin"] = origin;
+  }
+  return headers;
+}
+
+export async function OPTIONS(request: Request) {
+  return new Response(null, { status: 200, headers: corsHeaders(request) });
+}
+
+export async function GET(request: Request) {
+  const headers = corsHeaders(request);
+  const { searchParams } = new URL(request.url);
   const doi = searchParams.get("doi");
 
   if (!doi) {
-    return NextResponse.json({ error: "DOI is required" }, { status: 400 });
+    return NextResponse.json({ error: "DOI is required" }, { status: 400, headers });
   }
 
+  // Clean the DOI - remove any URL prefix if present
+  const cleanDoi = doi.replace(/^https?:\/\/doi\.org\//, "");
+
   try {
-    // Fetch from Crossref API
+    // Use Crossref API to fetch publication details (host is fixed; the DOI is
+    // encodeURIComponent'd into the path so it can't redirect to another host).
     const response = await fetch(
-      `https://api.crossref.org/works/${encodeURIComponent(doi)}`,
+      `https://api.crossref.org/works/${encodeURIComponent(cleanDoi)}`,
       {
         headers: {
-          Accept: "application/json",
+          "User-Agent": "Research-Homepage/1.0 (https://github.com/jamesdimonaco/research-homepage)",
         },
+        redirect: "error",
+        signal: AbortSignal.timeout(10000),
       }
     );
 
     if (!response.ok) {
       if (response.status === 404) {
-        return NextResponse.json({ error: "DOI not found" }, { status: 404 });
+        return NextResponse.json({ error: "DOI not found" }, { status: 404, headers });
       }
       throw new Error(`Crossref API error: ${response.status}`);
     }
@@ -29,32 +58,66 @@ export async function GET(request: NextRequest) {
     const data = await response.json();
     const work = data.message;
 
-    // Extract relevant fields
-    const result = {
+    // Extract relevant information
+    const publicationData = {
       title: work.title?.[0] || "",
-      authors:
-        work.author
-          ?.map(
-            (a: { given?: string; family?: string }) =>
-              `${a.given || ""} ${a.family || ""}`.trim()
-          )
-          .join(", ") || "",
-      journal:
-        work["container-title"]?.[0] ||
-        work["short-container-title"]?.[0] ||
-        "",
-      year: work.published?.["date-parts"]?.[0]?.[0] || null,
+      authors: work.author ? work.author.map((author: any) => {
+        let name = "";
+        if (author.family) {
+          name = author.family;
+          if (author.given) {
+            name = name + " " + author.given[0] + ".";
+          }
+        }
+        return name;
+      }).join(", ") : "",
+      journal: work["container-title"]?.[0] || work.publisher || "",
+      year: work.published?.["date-parts"]?.[0]?.[0] || work.posted?.["date-parts"]?.[0]?.[0] || work.created?.["date-parts"]?.[0]?.[0] || null,
       publicationDate: work.published?.["date-parts"]?.[0]
-        ? work.published["date-parts"][0].join("-")
+        ? `${work.published["date-parts"][0][0]}-${String(work.published["date-parts"][0][1] || 1).padStart(2, "0")}-${String(work.published["date-parts"][0][2] || 1).padStart(2, "0")}`
+        : work.posted?.["date-parts"]?.[0]
+        ? `${work.posted["date-parts"][0][0]}-${String(work.posted["date-parts"][0][1] || 1).padStart(2, "0")}-${String(work.posted["date-parts"][0][2] || 1).padStart(2, "0")}`
         : null,
+      doi: cleanDoi,
+      abstract: work.abstract ? stripHtml(work.abstract) : "",
+      type: work.type || "",
+      subtype: work.subtype || "",
+      status: determineStatus(work),
     };
 
-    return NextResponse.json(result);
+    return NextResponse.json(publicationData, { headers });
   } catch (error) {
-    console.error("DOI lookup error:", error);
+    // Log the internal detail server-side only; don't leak it to the caller.
+    console.error("Error fetching DOI details:", error);
     return NextResponse.json(
-      { error: "Failed to fetch DOI information" },
-      { status: 500 }
+      { error: "Failed to fetch DOI details" },
+      { status: 500, headers }
     );
   }
+}
+
+function determineStatus(work: any): string {
+  // Check if it's a preprint
+  if (work.subtype === "preprint" || work.type === "posted-content") {
+    return "preprint";
+  }
+
+  // Check if published
+  if (work.published || work["journal-issue"]) {
+    return "published";
+  }
+
+  // Default to preprint for bioRxiv/arXiv/etc
+  const preprintServers = ["biorxiv", "arxiv", "medrxiv", "chemrxiv", "ssrn"];
+  const publisher = work.publisher?.toLowerCase() || "";
+  if (preprintServers.some(server => publisher.includes(server))) {
+    return "preprint";
+  }
+
+  return "published";
+}
+
+function stripHtml(html: string): string {
+  // Remove HTML tags
+  return html.replace(/<[^>]*>/g, "").trim();
 }

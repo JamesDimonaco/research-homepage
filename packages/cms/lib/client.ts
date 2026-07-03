@@ -34,7 +34,9 @@ export function createSanityClient(config: SanityClientConfig) {
     tags?: string[];
     revalidate?: number;
   }) {
-    const defaultRevalidate = process.env.NODE_ENV === "development" ? 30 : 60;
+    // Pages are prerendered static (served from CDN), so TTFB is low regardless.
+    // Revalidate governs content freshness: 5 min balances edit-latency vs regen load.
+    const defaultRevalidate = process.env.NODE_ENV === "development" ? 30 : 300;
 
     return client.fetch<QueryResponse>(query, params, {
       next: {

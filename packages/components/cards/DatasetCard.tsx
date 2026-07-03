@@ -62,8 +62,8 @@ export default function DatasetCard({ dataset, featured = false }: DatasetCardPr
 
   const CardComponent = featured ? "div" : Card;
   const cardClasses = featured
-    ? "h-full hover:shadow-lg transition-all duration-300 group border rounded-lg overflow-hidden bg-card p-6"
-    : "h-full hover:shadow-lg transition-all duration-300 group";
+    ? "h-full hover:shadow-lg transition-all duration-300 group border rounded-lg overflow-hidden bg-card p-6 border-l-[3px] border-l-indigo-500 dark:border-l-indigo-400"
+    : "h-full hover:shadow-lg transition-all duration-300 group border-l-[3px] border-l-indigo-500 dark:border-l-indigo-400";
 
   return (
     <CardComponent className={cardClasses}>

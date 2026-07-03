@@ -52,7 +52,7 @@ export default function ConferenceCard({ conference }: ConferenceCardProps) {
   };
 
   return (
-    <Card className="h-full hover:shadow-lg transition-all duration-300 group">
+    <Card className="h-full hover:shadow-lg transition-all duration-300 group border-l-[3px] border-l-amber-500 dark:border-l-amber-400">
       <CardHeader className="space-y-4">
         {imageUrl && (
           <div className="relative h-48 w-full overflow-hidden rounded-lg">

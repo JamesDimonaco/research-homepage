@@ -20,7 +20,7 @@ export default async function Tools() {
   const tools = await sanityFetch<Tool[]>({ query });
 
   return (
-    <main className="bg-background py-24 min-h-screen">
+    <main className="bg-background py-16 min-h-screen">
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8">
           Tools

@@ -1,21 +1,47 @@
+import type { Metadata } from "next";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlForImage } from "@/sanity/lib/image";
 import Link from "next/link";
 import type { Publication, ContactInfo } from "@research-homepage/cms";
+import { serializeJsonLd, safeUrl } from "@research-homepage/cms";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@research-homepage/ui";
 import { Button } from "@research-homepage/ui";
 import { Badge } from "@research-homepage/ui";
 import { Calendar, FileText, Users, ExternalLink, Download } from "lucide-react";
 import { PublicationImage } from "@research-homepage/components";
 
+export const metadata: Metadata = {
+  title: "Publications",
+  description:
+    "Peer-reviewed publications, preprints, and in-press articles by Dr. Nicholas Dimonaco in computational biology, genomics, and bioinformatics.",
+  openGraph: {
+    title: "Publications | Dr. Nicholas Dimonaco",
+    description:
+      "Peer-reviewed publications and preprints in computational biology, genomics, and bioinformatics.",
+  },
+};
+
 const publicationsQuery = `*[_type == "publication"] | order(featured desc, year desc, publicationDate desc)`;
 const contactQuery = `*[_type == "contactInfo"][0]`;
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://nicholas.dimonaco.co.uk";
+
 export default async function Publications() {
-  const [publications, contactInfo] = await Promise.all([
+  const [rawPublications, contactInfo] = await Promise.all([
     sanityFetch<Publication[]>({ query: publicationsQuery }),
     sanityFetch<ContactInfo>({ query: contactQuery })
   ]);
+
+  // Scheme-sanitise all CMS/imported URLs up front so no `javascript:` (etc.)
+  // value can reach an href or the JSON-LD graph. safeUrl() returns undefined
+  // for unsafe schemes, which the existing truthy guards already skip.
+  const publications = rawPublications.map((p) => ({
+    ...p,
+    pdfLink: safeUrl(p.pdfLink),
+    preprintLink: safeUrl(p.preprintLink),
+    googleScholarLink: safeUrl(p.googleScholarLink),
+  }));
+  const contactGoogleScholar = safeUrl(contactInfo?.googleScholar);
 
   const getStatusBadge = (publication: Publication) => {
     if (!publication.status) return null;
@@ -58,15 +84,40 @@ export default async function Publications() {
     return "View Details";
   };
 
+  // Build ScholarlyArticle JSON-LD for published works
+  const scholarlyArticlesJsonLd = {
+    "@context": "https://schema.org",
+    "@graph": publications
+      .filter((p) => p.status === "published" || p.status === "preprint")
+      .map((p) => ({
+        "@type": "ScholarlyArticle",
+        headline: p.title,
+        ...(p.authors && { author: p.authors }),
+        ...(p.journal && { publisher: { "@type": "Organization", name: p.journal } }),
+        ...(p.year && { datePublished: String(p.year) }),
+        ...(p.publicationDate && { datePublished: p.publicationDate }),
+        ...(p.description && { abstract: p.description }),
+        ...(p.doi && { identifier: `https://doi.org/${p.doi}` }),
+        ...(p.googleScholarLink && { url: p.googleScholarLink }),
+        ...(p.pdfLink && { url: p.pdfLink }),
+        isPartOf: { "@type": "WebPage", url: `${siteUrl}/publications` },
+      })),
+  };
+
   return (
-    <main className="bg-background py-24 min-h-screen">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(scholarlyArticlesJsonLd) }}
+      />
+      <main className="bg-background py-16 min-h-screen">
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
           Publications
         </h1>
         <p className="text-lg text-muted-foreground mb-8">
-          This is a selection of publications. For a complete list, please see my {contactInfo?.googleScholar ? (
-            <Link href={contactInfo.googleScholar} target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">
+          This is a selection of publications. For a complete list, please see my {contactGoogleScholar ? (
+            <Link href={contactGoogleScholar} target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">
               Google Scholar
             </Link>
           ) : (
@@ -204,5 +255,6 @@ export default async function Publications() {
         </div>
       </div>
     </main>
+    </>
   );
 }

@@ -6,6 +6,7 @@ import { ThemeProvider, configureComponents } from "@research-homepage/component
 import { Analytics } from "@vercel/analytics/next";
 import { urlForImage } from "@/sanity/lib/image";
 import HeaderWrapper from "./components/HeaderWrapper";
+import { PostHogProvider } from "./components/PostHogProvider";
 
 // Configure the components package with our app's urlForImage function
 configureComponents({
@@ -19,9 +20,52 @@ const libre_franklin = Libre_Franklin({
 });
 const inter = Inter({ subsets: ["latin"] });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://nicholas.dimonaco.co.uk";
+
 export const metadata: Metadata = {
-  title: "Dr. Nicholas Dimonaco",
-  description: "Computational Biologist",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Dr. Nicholas Dimonaco | Computational Biologist",
+    template: "%s | Dr. Nicholas Dimonaco",
+  },
+  description:
+    "Dr. Nicholas Dimonaco is a computational biologist specialising in genomics, RNA biology, and bioinformatics. Browse his publications, research projects, datasets, and software tools.",
+  keywords: [
+    "computational biology",
+    "bioinformatics",
+    "genomics",
+    "RNA biology",
+    "research",
+    "publications",
+    "Nicholas Dimonaco",
+  ],
+  authors: [{ name: "Dr. Nicholas Dimonaco", url: siteUrl }],
+  creator: "Dr. Nicholas Dimonaco",
+  openGraph: {
+    type: "website",
+    locale: "en_GB",
+    url: siteUrl,
+    siteName: "Dr. Nicholas Dimonaco",
+    title: "Dr. Nicholas Dimonaco | Computational Biologist",
+    description:
+      "Computational biologist specialising in genomics, RNA biology, and bioinformatics. Explore research, publications, and software tools.",
+  },
+  twitter: {
+    card: "summary",
+    title: "Dr. Nicholas Dimonaco | Computational Biologist",
+    description:
+      "Computational biologist specialising in genomics, RNA biology, and bioinformatics. Explore research, publications, and software tools.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({
@@ -32,16 +76,18 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${libre_franklin.variable} overflow-x-hidden`}>
-        <Analytics />
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <HeaderWrapper />
-          <main className="min-h-screen overflow-x-hidden">{children}</main>
-        </ThemeProvider>
+        <PostHogProvider>
+          <Analytics />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <HeaderWrapper />
+            <main className="min-h-screen overflow-x-hidden">{children}</main>
+          </ThemeProvider>
+        </PostHogProvider>
       </body>
     </html>
   );

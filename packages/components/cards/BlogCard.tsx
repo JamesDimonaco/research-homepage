@@ -39,7 +39,7 @@ export default function BlogCard({ post, featured = false }: BlogCardProps) {
   return (
     <Link href={`/blog/${post.slug.current}`}>
       <Card
-        className={`group overflow-hidden h-full hover:shadow-lg transition-all duration-300 ${
+        className={`group overflow-hidden h-full hover:shadow-lg transition-all duration-300 border-l-[3px] border-l-blue-500 dark:border-l-blue-400 ${
           featured ? "border-primary" : ""
         }`}
       >

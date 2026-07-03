@@ -38,7 +38,7 @@ export default async function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="py-16 md:py-24 lg:py-32">
+      <section className="py-16 md:py-16 lg:py-24">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center">
             {homePage?.image && (

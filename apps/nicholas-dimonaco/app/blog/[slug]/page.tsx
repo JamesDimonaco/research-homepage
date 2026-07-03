@@ -1,5 +1,6 @@
 import { sanityFetch } from "@/sanity/lib/client";
 import type { Blog } from "@research-homepage/cms";
+import { safeUrl } from "@research-homepage/cms";
 import { urlForImage } from "@/sanity/lib/image";
 import Image from "next/image";
 import Link from "next/link";
@@ -63,11 +64,14 @@ const portableTextComponents = {
   },
   marks: {
     link: ({ value, children }: any) => {
+      const href = safeUrl(value?.href);
+      // Unsafe scheme (javascript:, data:, …) → render plain text, no link.
+      if (!href) return <>{children}</>;
       const target = value.blank ? "_blank" : undefined;
       const rel = value.blank ? "noopener noreferrer" : undefined;
       return (
         <Link
-          href={value.href}
+          href={href}
           target={target}
           rel={rel}
           className="text-primary underline hover:no-underline"
