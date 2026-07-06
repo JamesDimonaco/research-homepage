@@ -160,166 +160,198 @@ export function OrcidImportTool() {
     }
   }, [works, selected, client]);
 
+  const showFooter =
+    (phase === "review" || phase === "importing") && works.length > 0;
+
   return (
-    <Container width={2} paddingX={4} paddingY={5}>
-      <Stack space={5}>
-        <Stack space={3}>
-          <Heading size={3}>Import publications from ORCID</Heading>
-          <Text size={1} muted>
-            Enter an ORCID iD to pull the researcher&rsquo;s publications from
-            OpenAlex. Review the list, then import — each one is created as a{" "}
-            <strong>draft</strong> for you to check before publishing. Anything
-            already in the site is detected and skipped.
-          </Text>
-        </Stack>
-
-        <Flex gap={2}>
-          <Box flex={1}>
-            <TextInput
-              icon={SearchIcon}
-              placeholder="0000-0002-1825-0097  or  https://orcid.org/0000-0002-1825-0097"
-              value={orcidInput}
-              onChange={(e) => setOrcidInput(e.currentTarget.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleFetch()}
-              disabled={phase === "fetching" || phase === "importing"}
-            />
-          </Box>
-          <Button
-            text={phase === "fetching" ? "Fetching…" : "Fetch works"}
-            tone="primary"
-            icon={phase === "fetching" ? Spinner : SearchIcon}
-            disabled={phase === "fetching" || phase === "importing" || !orcidInput}
-            onClick={handleFetch}
-          />
-        </Flex>
-
-        {error && (
-          <Card padding={3} radius={2} tone="critical" shadow={1}>
-            <Flex align="center" gap={2}>
-              <Text size={1}>
-                <WarningOutlineIcon />
-              </Text>
-              <Text size={1}>{error}</Text>
-            </Flex>
-          </Card>
-        )}
-
-        {phase === "done" && (
-          <Card padding={4} radius={2} tone="positive" shadow={1}>
-            <Flex align="center" gap={3}>
-              <Text size={3}>
-                <CheckmarkCircleIcon />
-              </Text>
-              <Stack space={2}>
-                <Text size={2} weight="semibold">
-                  Imported {importedCount} publication
-                  {importedCount === 1 ? "" : "s"} as drafts.
-                </Text>
-                <Text size={1} muted>
-                  Open the Publications list to review and publish them.
-                </Text>
-              </Stack>
-            </Flex>
-          </Card>
-        )}
-
-        {(phase === "review" || phase === "importing") && works.length > 0 && (
-          <Stack space={3}>
-            <Flex align="center" justify="space-between">
+    <Flex direction="column" height="fill">
+      {/* Scrollable content — the Studio tool pane is fixed-height with
+          overflow hidden, so the tool has to own its own scroll region.
+          Without this the list pushes the import CTA below the fold and it
+          can't be reached. */}
+      <Box flex={1} overflow="auto" paddingX={4} paddingTop={5} paddingBottom={4}>
+        <Container width={2}>
+          <Stack space={5}>
+            <Stack space={3}>
+              <Heading size={3}>Import publications from ORCID</Heading>
               <Text size={1} muted>
-                {works.length} shown{total > works.length ? ` of ${total}` : ""} ·{" "}
-                {selectableCount} new · {selectedCount} selected
+                Enter an ORCID iD to pull the researcher&rsquo;s publications from
+                OpenAlex. Review the list, then import — each one is created as a{" "}
+                <strong>draft</strong> for you to check before publishing. Anything
+                already in the site is detected and skipped.
               </Text>
-              <Inline space={2}>
-                <Button
-                  mode="ghost"
-                  fontSize={1}
-                  text="Select all new"
-                  onClick={() => setAll(true)}
-                  disabled={phase === "importing"}
-                />
-                <Button
-                  mode="ghost"
-                  fontSize={1}
-                  text="Clear"
-                  onClick={() => setAll(false)}
-                  disabled={phase === "importing"}
-                />
-              </Inline>
-            </Flex>
-
-            <Stack space={2}>
-              {works.map((w) => (
-                <Card
-                  key={w.key}
-                  padding={3}
-                  radius={2}
-                  shadow={1}
-                  tone={w.alreadyExists ? "transparent" : "default"}
-                >
-                  <Flex gap={3} align="flex-start">
-                    <Box paddingTop={1}>
-                      <Checkbox
-                        checked={!!selected[w.key] && !w.alreadyExists}
-                        disabled={w.alreadyExists || phase === "importing"}
-                        onChange={() => toggle(w.key)}
-                      />
-                    </Box>
-                    <Stack space={2} flex={1}>
-                      <Text size={1} weight="semibold">
-                        {w.title}
-                      </Text>
-                      <Inline space={2}>
-                        {w.year && (
-                          <Badge tone="primary" fontSize={0}>
-                            {w.year}
-                          </Badge>
-                        )}
-                        <Badge
-                          tone={w.status === "preprint" ? "caution" : "positive"}
-                          fontSize={0}
-                        >
-                          {w.status}
-                        </Badge>
-                        {w.alreadyExists && (
-                          <Badge tone="default" fontSize={0}>
-                            already on site
-                          </Badge>
-                        )}
-                      </Inline>
-                      {w.journal && (
-                        <Text size={1} muted>
-                          {w.journal}
-                        </Text>
-                      )}
-                      {w.doi && (
-                        <Text size={0} muted>
-                          doi:{w.doi}
-                        </Text>
-                      )}
-                    </Stack>
-                  </Flex>
-                </Card>
-              ))}
             </Stack>
 
-            <Box>
+            <Flex gap={2}>
+              <Box flex={1}>
+                <TextInput
+                  icon={SearchIcon}
+                  placeholder="0000-0002-1825-0097  or  https://orcid.org/0000-0002-1825-0097"
+                  value={orcidInput}
+                  onChange={(e) => setOrcidInput(e.currentTarget.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleFetch()}
+                  disabled={phase === "fetching" || phase === "importing"}
+                />
+              </Box>
+              <Button
+                text={phase === "fetching" ? "Fetching…" : "Fetch works"}
+                tone="primary"
+                icon={phase === "fetching" ? Spinner : SearchIcon}
+                disabled={
+                  phase === "fetching" || phase === "importing" || !orcidInput
+                }
+                onClick={handleFetch}
+              />
+            </Flex>
+
+            {error && (
+              <Card padding={3} radius={2} tone="critical" shadow={1}>
+                <Flex align="center" gap={2}>
+                  <Text size={1}>
+                    <WarningOutlineIcon />
+                  </Text>
+                  <Text size={1}>{error}</Text>
+                </Flex>
+              </Card>
+            )}
+
+            {phase === "done" && (
+              <Card padding={4} radius={2} tone="positive" shadow={1}>
+                <Flex align="center" gap={3}>
+                  <Text size={3}>
+                    <CheckmarkCircleIcon />
+                  </Text>
+                  <Stack space={2}>
+                    <Text size={2} weight="semibold">
+                      Imported {importedCount} publication
+                      {importedCount === 1 ? "" : "s"} as drafts.
+                    </Text>
+                    <Text size={1} muted>
+                      Open the Publications list to review and publish them.
+                    </Text>
+                  </Stack>
+                </Flex>
+              </Card>
+            )}
+
+            {(phase === "review" || phase === "importing") &&
+              works.length > 0 && (
+                <Stack space={3}>
+                  <Flex align="center" justify="space-between">
+                    <Text size={1} muted>
+                      {works.length} shown
+                      {total > works.length ? ` of ${total}` : ""} ·{" "}
+                      {selectableCount} new · {selectedCount} selected
+                    </Text>
+                    <Inline space={2}>
+                      <Button
+                        mode="ghost"
+                        fontSize={1}
+                        text="Select all new"
+                        onClick={() => setAll(true)}
+                        disabled={phase === "importing"}
+                      />
+                      <Button
+                        mode="ghost"
+                        fontSize={1}
+                        text="Clear"
+                        onClick={() => setAll(false)}
+                        disabled={phase === "importing"}
+                      />
+                    </Inline>
+                  </Flex>
+
+                  <Stack space={2}>
+                    {works.map((w) => (
+                      <Card
+                        key={w.key}
+                        padding={3}
+                        radius={2}
+                        shadow={1}
+                        tone={w.alreadyExists ? "transparent" : "default"}
+                      >
+                        <Flex gap={3} align="flex-start">
+                          <Box paddingTop={1}>
+                            <Checkbox
+                              checked={!!selected[w.key] && !w.alreadyExists}
+                              disabled={w.alreadyExists || phase === "importing"}
+                              onChange={() => toggle(w.key)}
+                            />
+                          </Box>
+                          <Stack space={2} flex={1}>
+                            <Text size={1} weight="semibold">
+                              {w.title}
+                            </Text>
+                            <Inline space={2}>
+                              {w.year && (
+                                <Badge tone="primary" fontSize={0}>
+                                  {w.year}
+                                </Badge>
+                              )}
+                              <Badge
+                                tone={
+                                  w.status === "preprint"
+                                    ? "caution"
+                                    : "positive"
+                                }
+                                fontSize={0}
+                              >
+                                {w.status}
+                              </Badge>
+                              {w.alreadyExists && (
+                                <Badge tone="default" fontSize={0}>
+                                  already on site
+                                </Badge>
+                              )}
+                            </Inline>
+                            {w.journal && (
+                              <Text size={1} muted>
+                                {w.journal}
+                              </Text>
+                            )}
+                            {w.doi && (
+                              <Text size={0} muted>
+                                doi:{w.doi}
+                              </Text>
+                            )}
+                          </Stack>
+                        </Flex>
+                      </Card>
+                    ))}
+                  </Stack>
+                </Stack>
+              )}
+          </Stack>
+        </Container>
+      </Box>
+
+      {/* Sticky action bar — the primary CTA stays put no matter how long
+          the list is, instead of hiding below the fold. */}
+      {showFooter && (
+        <Card borderTop paddingX={4} paddingY={3} tone="default">
+          <Container width={2}>
+            <Flex align="center" justify="space-between" gap={3}>
+              <Text size={1} muted>
+                {selectedCount} of {selectableCount} selected
+              </Text>
               <Button
                 text={
                   phase === "importing"
                     ? "Importing…"
-                    : `Import ${selectedCount} as draft${selectedCount === 1 ? "" : "s"}`
+                    : `Import ${selectedCount} as draft${
+                        selectedCount === 1 ? "" : "s"
+                      }`
                 }
                 tone="primary"
                 icon={phase === "importing" ? Spinner : DownloadIcon}
                 disabled={phase === "importing" || selectedCount === 0}
                 onClick={handleImport}
               />
-            </Box>
-          </Stack>
-        )}
-      </Stack>
-    </Container>
+            </Flex>
+          </Container>
+        </Card>
+      )}
+    </Flex>
   );
 }
 
