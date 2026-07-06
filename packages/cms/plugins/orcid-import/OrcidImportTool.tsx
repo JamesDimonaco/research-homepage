@@ -22,17 +22,21 @@ import {
   CheckmarkCircleIcon,
   SearchIcon,
   WarningOutlineIcon,
+  UserIcon,
 } from "@sanity/icons";
 import {
   fetchWorksByOrcid,
+  fetchAuthorByOrcid,
   normaliseDoi,
   normaliseOrcid,
   type MappedWork,
+  type AuthorProfile,
 } from "./openalex";
 
 const API_VERSION = "2024-06-10";
 
 type Phase = "idle" | "fetching" | "review" | "importing" | "done";
+type ProfilePhase = "idle" | "applying" | "done";
 
 export function OrcidImportTool() {
   const client = useClient({ apiVersion: API_VERSION });
@@ -44,6 +48,9 @@ export function OrcidImportTool() {
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const [importedCount, setImportedCount] = useState(0);
   const [total, setTotal] = useState(0);
+  const [author, setAuthor] = useState<AuthorProfile | null>(null);
+  const [activeOrcid, setActiveOrcid] = useState<string | null>(null);
+  const [profilePhase, setProfilePhase] = useState<ProfilePhase>("idle");
 
   const selectableCount = useMemo(
     () => works.filter((w) => !w.alreadyExists).length,
@@ -66,9 +73,20 @@ export function OrcidImportTool() {
     setWorks([]);
     setSelected({});
     setImportedCount(0);
+    setAuthor(null);
+    setActiveOrcid(orcidId);
+    setProfilePhase("idle");
 
     try {
-      const { works: fetched, total: count } = await fetchWorksByOrcid(orcidId);
+      // Author profile is best-effort — a missing record shouldn't block the
+      // publication import, so we swallow its errors and just skip the card.
+      const [worksResult, authorResult] = await Promise.all([
+        fetchWorksByOrcid(orcidId),
+        fetchAuthorByOrcid(orcidId).catch(() => null),
+      ]);
+      const { works: fetched, total: count } = worksResult;
+      setAuthor(authorResult);
+
       if (!fetched.length) {
         setError(
           "No works found on OpenAlex for that ORCID iD. Double-check the iD, or the record may not be indexed yet.",
@@ -103,6 +121,55 @@ export function OrcidImportTool() {
       setPhase("idle");
     }
   }, [orcidInput, client]);
+
+  // RH-25: set up the site profile (homePage singleton) from the ORCID/OpenAlex
+  // record — name + affiliation + the ORCID iD itself. Writes a DRAFT and only
+  // fills blanks, so existing content (bio, image, sections) is never clobbered.
+  const handleApplyProfile = useCallback(async () => {
+    if (!activeOrcid) return;
+    setProfilePhase("applying");
+    setError(null);
+    try {
+      const existing = await client.fetch(
+        `*[_type == "homePage"] | order(_updatedAt desc)[0]`,
+      );
+      const baseId: string = existing?._id
+        ? existing._id.replace(/^drafts\./, "")
+        : "homePage";
+      const draftId = `drafts.${baseId}`;
+
+      // Seed a draft from whatever exists (published or newest) so bio / image /
+      // sections are never lost — but createIfNotExists is a no-op when the draft
+      // already exists, so an in-progress draft is left untouched.
+      const seed: Record<string, any> = existing
+        ? { ...existing, _id: draftId }
+        : { _id: draftId, _type: "homePage" };
+      delete seed._rev;
+      delete seed._createdAt;
+      delete seed._updatedAt;
+      await client.createIfNotExists(seed as any);
+
+      // Fill only blank fields via setIfMissing (operates on current draft
+      // state, keeps _rev concurrency — no stale-snapshot clobber). The ORCID
+      // iD is always (re)bound, which is the whole point of the action.
+      await client
+        .patch(draftId)
+        .setIfMissing({
+          ...(author?.displayName ? { name: author.displayName } : {}),
+          ...(author?.institution ? { affiliation: author.institution } : {}),
+        })
+        .set({ orcid: activeOrcid })
+        .commit();
+      setProfilePhase("done");
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? `Couldn't set up the profile: ${err.message}`
+          : "Couldn't set up the profile.",
+      );
+      setProfilePhase("idle");
+    }
+  }, [activeOrcid, author, client]);
 
   const toggle = useCallback((key: string) => {
     setSelected((s) => ({ ...s, [key]: !s[key] }));
@@ -229,6 +296,54 @@ export function OrcidImportTool() {
                     <Text size={1} muted>
                       Open the Publications list to review and publish them.
                     </Text>
+                  </Stack>
+                </Flex>
+              </Card>
+            )}
+
+            {(phase === "review" || phase === "importing") && author && (
+              <Card
+                padding={3}
+                radius={2}
+                shadow={1}
+                tone={profilePhase === "done" ? "positive" : "primary"}
+              >
+                <Flex align="flex-start" gap={3}>
+                  <Text size={2}>
+                    <UserIcon />
+                  </Text>
+                  <Stack space={3} flex={1}>
+                    <Stack space={2}>
+                      <Text size={1} weight="semibold">
+                        {profilePhase === "done"
+                          ? "Profile drafted"
+                          : "Set up the site profile"}
+                      </Text>
+                      <Text size={1} muted>
+                        {author.displayName ?? "This researcher"}
+                        {author.institution ? ` · ${author.institution}` : ""}
+                      </Text>
+                      <Text size={1} muted>
+                        {profilePhase === "done"
+                          ? "Saved as a draft of the Home Page — name, affiliation and ORCID iD. Review and publish it there."
+                          : "Fills the Home Page name, affiliation and ORCID iD as a draft — your bio, photo and sections are left untouched."}
+                      </Text>
+                    </Stack>
+                    {profilePhase !== "done" && (
+                      <Box>
+                        <Button
+                          text={
+                            profilePhase === "applying"
+                              ? "Setting up…"
+                              : "Set up profile"
+                          }
+                          tone="primary"
+                          icon={profilePhase === "applying" ? Spinner : UserIcon}
+                          disabled={profilePhase === "applying"}
+                          onClick={handleApplyProfile}
+                        />
+                      </Box>
+                    )}
                   </Stack>
                 </Flex>
               </Card>

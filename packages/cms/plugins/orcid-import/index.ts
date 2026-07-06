@@ -21,5 +21,11 @@ export const orcidImportTool = definePlugin({
   ],
 });
 
-export { fetchWorksByOrcid, normaliseOrcid, normaliseDoi } from "./openalex";
-export type { MappedWork } from "./openalex";
+export {
+  fetchWorksByOrcid,
+  fetchAuthorByOrcid,
+  fetchScholarMetrics,
+  normaliseOrcid,
+  normaliseDoi,
+} from "./openalex";
+export type { MappedWork, AuthorProfile, ScholarMetrics } from "./openalex";

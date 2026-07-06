@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlForImage } from "@/sanity/lib/image";
 import Link from "next/link";
-import type { Publication, ContactInfo } from "@research-homepage/cms";
-import { serializeJsonLd, safeUrl } from "@research-homepage/cms";
+import type { Publication, ContactInfo, ScholarMetrics } from "@research-homepage/cms";
+import { serializeJsonLd, safeUrl, fetchScholarMetrics, normaliseDoi, normaliseOrcid } from "@research-homepage/cms";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@research-homepage/ui";
 import { Button } from "@research-homepage/ui";
 import { Badge } from "@research-homepage/ui";
-import { Calendar, FileText, Users, ExternalLink, Download } from "lucide-react";
-import { PublicationImage } from "@research-homepage/components";
+import { Calendar, FileText, Users, ExternalLink, Download, Quote } from "lucide-react";
+import { PublicationImage, CiteButton, ScholarStats } from "@research-homepage/components";
 
 export const metadata: Metadata = {
   title: "Publications",
@@ -23,14 +23,28 @@ export const metadata: Metadata = {
 
 const publicationsQuery = `*[_type == "publication"] | order(featured desc, year desc, publicationDate desc)`;
 const contactQuery = `*[_type == "contactInfo"][0]`;
+const orcidQuery = `*[_type == "homePage"][0]{ orcid }`;
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://nicholas.dimonaco.co.uk";
 
+const EMPTY_METRICS: ScholarMetrics = { author: null, citationsByDoi: {} };
+
 export default async function Publications() {
-  const [rawPublications, contactInfo] = await Promise.all([
+  const [rawPublications, contactInfo, homePageMeta] = await Promise.all([
     sanityFetch<Publication[]>({ query: publicationsQuery }),
-    sanityFetch<ContactInfo>({ query: contactQuery })
+    sanityFetch<ContactInfo>({ query: contactQuery }),
+    sanityFetch<{ orcid?: string }>({ query: orcidQuery }),
   ]);
+
+  // Citation metrics (author strip + per-paper counts), cached for a day and
+  // never allowed to break the page if OpenAlex is unavailable.
+  let metrics: ScholarMetrics = EMPTY_METRICS;
+  const orcid = homePageMeta?.orcid ? normaliseOrcid(homePageMeta.orcid) : null;
+  if (orcid) {
+    metrics = await fetchScholarMetrics(orcid, {
+      revalidate: 86400,
+    }).catch(() => EMPTY_METRICS);
+  }
 
   // Scheme-sanitise all CMS/imported URLs up front so no `javascript:` (etc.)
   // value can reach an href or the JSON-LD graph. safeUrl() returns undefined
@@ -124,12 +138,17 @@ export default async function Publications() {
             "Google Scholar"
           )} profile.
         </p>
+        <ScholarStats author={metrics.author} className="mb-10" showWorks={false} />
         <div className="grid grid-cols-1 gap-8">
           {publications.map((publication) => {
             const image = publication.image
               ? urlForImage(publication.image)
               : null;
             const primaryLink = getPrimaryLink(publication);
+            const normalisedDoi = normaliseDoi(publication.doi);
+            const citations = normalisedDoi
+              ? metrics.citationsByDoi[normalisedDoi]
+              : undefined;
 
             return (
               <Card key={publication._id} className="overflow-hidden hover:shadow-lg transition-shadow">
@@ -155,6 +174,13 @@ export default async function Publications() {
                           {publication.year && (
                             <Badge variant="outline" className="text-xs">
                               {publication.year}
+                            </Badge>
+                          )}
+                          {typeof citations === "number" && (
+                            <Badge variant="outline" className="text-xs gap-1">
+                              <Quote className="w-3 h-3" />
+                              {citations.toLocaleString("en-US")}{" "}
+                              {citations === 1 ? "citation" : "citations"}
                             </Badge>
                           )}
                         </div>
@@ -237,6 +263,7 @@ export default async function Publications() {
                           </Link>
                         </Button>
                       )}
+                      <CiteButton publication={publication} />
                     </CardFooter>
                   </div>
                   {image && (

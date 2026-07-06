@@ -21,6 +21,8 @@ export interface HomePage {
   _rev: string;
   name: string;
   image?: SanityImage;
+  affiliation?: string;
+  orcid?: string;
   bio: string;
   sections: Section[];
 }

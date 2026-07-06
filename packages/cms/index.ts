@@ -8,7 +8,17 @@ export { serializeJsonLd, safeUrl, stripUnsafeChars } from "./lib/security";
 
 // Plugins
 export { DoiInput, createDoiInput, type DoiInputConfig } from "./plugins/doi-input";
-export { orcidImportTool, type MappedWork } from "./plugins/orcid-import";
+export {
+  orcidImportTool,
+  fetchWorksByOrcid,
+  fetchAuthorByOrcid,
+  fetchScholarMetrics,
+  normaliseOrcid,
+  normaliseDoi,
+  type MappedWork,
+  type AuthorProfile,
+  type ScholarMetrics,
+} from "./plugins/orcid-import";
 
 // Types
 export * from "./types";

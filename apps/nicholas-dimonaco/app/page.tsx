@@ -1,10 +1,10 @@
 import Image from "next/image";
 import { sanityFetch } from "../sanity/lib/client";
 import { urlForImage } from "@/sanity/lib/image";
-import { Section, ContactSection, CVSection, ResearchInterestsCloud } from "@research-homepage/components";
+import { Section, ContactSection, CVSection, ResearchInterestsCloud, ScholarStats } from "@research-homepage/components";
 import { Card, CardContent, Separator } from "@research-homepage/ui";
-import type { HomePage, ContactInfo, CV, ResearchInterest } from "@research-homepage/cms";
-import { serializeJsonLd } from "@research-homepage/cms";
+import type { HomePage, ContactInfo, CV, ResearchInterest, AuthorProfile } from "@research-homepage/cms";
+import { serializeJsonLd, fetchAuthorByOrcid, normaliseOrcid } from "@research-homepage/cms";
 
 const query = `*[_type == "homePage"][0]`;
 const contactQuery = `*[_type == "contactInfo"][0]`;
@@ -22,6 +22,16 @@ export default async function Home() {
     sanityFetch<ResearchInterest[]>({ query: interestsQuery }),
   ]);
   const image = homePage.image ? urlForImage(homePage.image) : null;
+
+  // Scholarly metrics for the hero strip — cached for a day, and never allowed
+  // to break the page if OpenAlex is down or the ORCID iD has no record.
+  let author: AuthorProfile | null = null;
+  const orcid = homePage.orcid ? normaliseOrcid(homePage.orcid) : null;
+  if (orcid) {
+    author = await fetchAuthorByOrcid(orcid, {
+      revalidate: 86400,
+    }).catch(() => null);
+  }
 
   // Build sameAs array from contactInfo links present in CMS
   const sameAs = [
@@ -77,10 +87,16 @@ export default async function Home() {
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
                   {homePage.name}
                 </h1>
+                {homePage.affiliation && (
+                  <p className="text-lg md:text-xl text-muted-foreground">
+                    {homePage.affiliation}
+                  </p>
+                )}
               </div>
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
                 {homePage.bio}
               </p>
+              {author && <ScholarStats author={author} className="pt-2" />}
             </div>
             <div className="flex justify-center md:justify-end">
               {image ? (
