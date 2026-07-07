@@ -4,7 +4,7 @@ import { urlForImage } from "@/sanity/lib/image";
 import { Section, ContactSection, CVSection, ResearchInterestsCloud, ScholarStats } from "@research-homepage/components";
 import { Card, CardContent, Separator } from "@research-homepage/ui";
 import type { HomePage, ContactInfo, CV, ResearchInterest, AuthorProfile } from "@research-homepage/cms";
-import { serializeJsonLd, fetchAuthorByOrcid, normaliseOrcid } from "@research-homepage/cms";
+import { serializeJsonLd, fetchAuthorByOrcid, fetchPublicationCountByOrcid, normaliseOrcid } from "@research-homepage/cms";
 
 const query = `*[_type == "homePage"][0]`;
 const contactQuery = `*[_type == "contactInfo"][0]`;
@@ -25,13 +25,24 @@ export default async function Home() {
 
   // Scholarly metrics for the hero strip — cached for a day, and never allowed
   // to break the page if OpenAlex is down or the ORCID iD has no record.
+  // Author-level figures come from OpenAlex; the publication count comes from
+  // ORCID (deduped, dataset-free) — see fetchPublicationCountByOrcid.
   let author: AuthorProfile | null = null;
+  let publicationsCount: number | null = null;
   const orcid = homePage.orcid ? normaliseOrcid(homePage.orcid) : null;
   if (orcid) {
-    author = await fetchAuthorByOrcid(orcid, {
-      revalidate: 86400,
-    }).catch(() => null);
+    [author, publicationsCount] = await Promise.all([
+      fetchAuthorByOrcid(orcid, { revalidate: 86400 }).catch(() => null),
+      fetchPublicationCountByOrcid(orcid, { revalidate: 86400 }).catch(() => null),
+    ]);
   }
+
+  const metricOverrides = {
+    citations: homePage.citationsOverride,
+    hIndex: homePage.hIndexOverride,
+    i10Index: homePage.i10IndexOverride,
+    publications: homePage.publicationsOverride,
+  };
 
   // Build sameAs array from contactInfo links present in CMS
   const sameAs = [
@@ -96,7 +107,13 @@ export default async function Home() {
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
                 {homePage.bio}
               </p>
-              {author && <ScholarStats author={author} className="pt-2" />}
+              <ScholarStats
+                author={author}
+                overrides={metricOverrides}
+                publicationsCount={publicationsCount}
+                sourceLabel={homePage.metricsSourceLabel}
+                className="pt-2"
+              />
             </div>
             <div className="flex justify-center md:justify-end">
               {image ? (

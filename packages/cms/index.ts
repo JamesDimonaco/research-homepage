@@ -13,6 +13,8 @@ export {
   fetchWorksByOrcid,
   fetchAuthorByOrcid,
   fetchScholarMetrics,
+  fetchPublicationCountByOrcid,
+  fetchWorksFromOrcid,
   normaliseOrcid,
   normaliseDoi,
   type MappedWork,

@@ -212,6 +212,49 @@ export async function fetchWorksByOrcid(
 }
 
 /**
+ * Enrich a set of DOIs with OpenAlex metadata (authors, abstract, citations,
+ * OA links). Used by the ORCID-driven importer, which decides *which* works to
+ * show from the curated ORCID record and then pulls the rich content here.
+ *
+ * Returns a map keyed by normalised DOI. Best-effort: a failed chunk is skipped
+ * rather than throwing, so enrichment never blocks the import.
+ */
+export async function fetchWorksByDois(
+  dois: (string | null | undefined)[],
+  opts: { mailto?: string; revalidate?: number } = {},
+): Promise<Map<string, MappedWork>> {
+  const { mailto = "james@dimonaco.co.uk", revalidate } = opts;
+  const map = new Map<string, MappedWork>();
+  const unique = [
+    ...new Set(dois.map((d) => normaliseDoi(d)).filter(Boolean) as string[]),
+  ];
+  if (!unique.length) return map;
+
+  // OpenAlex accepts a pipe-separated DOI list in one filter; chunk to stay
+  // well within URL/param limits for prolific authors.
+  for (let i = 0; i < unique.length; i += 40) {
+    const chunk = unique.slice(i, i + 40);
+    const filter = `doi:${chunk.join("|")}`;
+    const url =
+      `${OPENALEX}?filter=${encodeURIComponent(filter)}` +
+      `&per-page=50&mailto=${encodeURIComponent(mailto)}`;
+    try {
+      const res = await fetch(url, openalexInit(revalidate));
+      if (!res.ok) continue;
+      const json: any = await res.json();
+      const batch: any[] = Array.isArray(json?.results) ? json.results : [];
+      for (const raw of batch) {
+        const mapped = mapWork(raw);
+        if (mapped?.doi) map.set(mapped.doi, mapped);
+      }
+    } catch {
+      // Skip this chunk; the importer falls back to ORCID-only fields.
+    }
+  }
+  return map;
+}
+
+/**
  * Fetch a researcher's author-level metrics from OpenAlex (h-index, citations,
  * last-known institution, display name). Used both to bootstrap a new site's
  * profile and to render the citation-metrics strip.

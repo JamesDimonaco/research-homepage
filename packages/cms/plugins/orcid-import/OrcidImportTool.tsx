@@ -25,13 +25,13 @@ import {
   UserIcon,
 } from "@sanity/icons";
 import {
-  fetchWorksByOrcid,
   fetchAuthorByOrcid,
   normaliseDoi,
   normaliseOrcid,
   type MappedWork,
   type AuthorProfile,
 } from "./openalex";
+import { fetchWorksFromOrcid } from "./orcid";
 
 const API_VERSION = "2024-06-10";
 
@@ -81,7 +81,7 @@ export function OrcidImportTool() {
       // Author profile is best-effort — a missing record shouldn't block the
       // publication import, so we swallow its errors and just skip the card.
       const [worksResult, authorResult] = await Promise.all([
-        fetchWorksByOrcid(orcidId),
+        fetchWorksFromOrcid(orcidId),
         fetchAuthorByOrcid(orcidId).catch(() => null),
       ]);
       const { works: fetched, total: count } = worksResult;
@@ -89,7 +89,7 @@ export function OrcidImportTool() {
 
       if (!fetched.length) {
         setError(
-          "No works found on OpenAlex for that ORCID iD. Double-check the iD, or the record may not be indexed yet.",
+          "No publications found on that ORCID record. Double-check the iD, or the record may have no works listed yet.",
         );
         setPhase("idle");
         return;
@@ -242,10 +242,16 @@ export function OrcidImportTool() {
             <Stack space={3}>
               <Heading size={3}>Import publications from ORCID</Heading>
               <Text size={1} muted>
-                Enter an ORCID iD to pull the researcher&rsquo;s publications from
-                OpenAlex. Review the list, then import — each one is created as a{" "}
-                <strong>draft</strong> for you to check before publishing. Anything
-                already in the site is detected and skipped.
+                <strong>Step 1.</strong> Enter an ORCID iD and fetch. Publications
+                come from the researcher&rsquo;s ORCID record — already deduped,
+                with datasets and supplementary files removed — and are enriched
+                with authors and abstracts from OpenAlex.
+              </Text>
+              <Text size={1} muted>
+                <strong>Step 2.</strong> Tick the ones to add and press{" "}
+                <strong>Import</strong>. Each becomes a <strong>draft</strong> for
+                you to review before publishing; anything already on the site is
+                detected and skipped.
               </Text>
             </Stack>
 
@@ -352,10 +358,9 @@ export function OrcidImportTool() {
             {(phase === "review" || phase === "importing") &&
               works.length > 0 && (
                 <Stack space={3}>
-                  <Flex align="center" justify="space-between">
+                  <Flex align="center" justify="space-between" gap={3}>
                     <Text size={1} muted>
-                      {works.length} shown
-                      {total > works.length ? ` of ${total}` : ""} ·{" "}
+                      {works.length} publication{works.length === 1 ? "" : "s"} ·{" "}
                       {selectableCount} new · {selectedCount} selected
                     </Text>
                     <Inline space={2}>
@@ -372,6 +377,18 @@ export function OrcidImportTool() {
                         text="Clear"
                         onClick={() => setAll(false)}
                         disabled={phase === "importing"}
+                      />
+                      <Button
+                        fontSize={1}
+                        text={
+                          phase === "importing"
+                            ? "Importing…"
+                            : `Import ${selectedCount}`
+                        }
+                        tone="primary"
+                        icon={phase === "importing" ? Spinner : DownloadIcon}
+                        disabled={phase === "importing" || selectedCount === 0}
+                        onClick={handleImport}
                       />
                     </Inline>
                   </Flex>

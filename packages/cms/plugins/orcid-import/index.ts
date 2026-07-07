@@ -29,3 +29,4 @@ export {
   normaliseDoi,
 } from "./openalex";
 export type { MappedWork, AuthorProfile, ScholarMetrics } from "./openalex";
+export { fetchPublicationCountByOrcid, fetchWorksFromOrcid } from "./orcid";

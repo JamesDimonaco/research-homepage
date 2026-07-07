@@ -23,6 +23,11 @@ export interface HomePage {
   image?: SanityImage;
   affiliation?: string;
   orcid?: string;
+  citationsOverride?: number;
+  hIndexOverride?: number;
+  i10IndexOverride?: number;
+  publicationsOverride?: number;
+  metricsSourceLabel?: string;
   bio: string;
   sections: Section[];
 }

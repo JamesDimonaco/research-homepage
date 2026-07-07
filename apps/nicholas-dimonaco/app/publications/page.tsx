@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 
 const publicationsQuery = `*[_type == "publication"] | order(featured desc, year desc, publicationDate desc)`;
 const contactQuery = `*[_type == "contactInfo"][0]`;
-const orcidQuery = `*[_type == "homePage"][0]{ orcid }`;
+const orcidQuery = `*[_type == "homePage"][0]{ orcid, citationsOverride, hIndexOverride, i10IndexOverride, metricsSourceLabel }`;
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://nicholas.dimonaco.co.uk";
 
@@ -33,7 +33,13 @@ export default async function Publications() {
   const [rawPublications, contactInfo, homePageMeta] = await Promise.all([
     sanityFetch<Publication[]>({ query: publicationsQuery }),
     sanityFetch<ContactInfo>({ query: contactQuery }),
-    sanityFetch<{ orcid?: string }>({ query: orcidQuery }),
+    sanityFetch<{
+      orcid?: string;
+      citationsOverride?: number;
+      hIndexOverride?: number;
+      i10IndexOverride?: number;
+      metricsSourceLabel?: string;
+    }>({ query: orcidQuery }),
   ]);
 
   // Citation metrics (author strip + per-paper counts), cached for a day and
@@ -138,7 +144,17 @@ export default async function Publications() {
             "Google Scholar"
           )} profile.
         </p>
-        <ScholarStats author={metrics.author} className="mb-10" showWorks={false} />
+        <ScholarStats
+          author={metrics.author}
+          overrides={{
+            citations: homePageMeta?.citationsOverride,
+            hIndex: homePageMeta?.hIndexOverride,
+            i10Index: homePageMeta?.i10IndexOverride,
+          }}
+          sourceLabel={homePageMeta?.metricsSourceLabel}
+          className="mb-10"
+          showWorks={false}
+        />
         <div className="grid grid-cols-1 gap-8">
           {publications.map((publication) => {
             const image = publication.image

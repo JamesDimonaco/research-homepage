@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { StringInputProps, set, unset } from "sanity";
+import { StringInputProps, set, unset, useClient, useFormValue } from "sanity";
 import { Stack, Text, TextInput, Button, Card, Box, Flex } from "@sanity/ui";
 import { SearchIcon, CheckmarkIcon, ErrorOutlineIcon } from "@sanity/icons";
+
+const API_VERSION = "2024-06-10";
 
 export interface DoiInputConfig {
   apiPath?: string;
@@ -14,6 +16,10 @@ export function createDoiInput(config: DoiInputConfig = {}) {
 
   return function DoiInput(props: StringInputProps) {
     const { onChange, value } = props;
+    const client = useClient({ apiVersion: API_VERSION });
+    // The id of the document currently open in the editor (draft or published),
+    // so we can write the fetched metadata straight into its sibling fields.
+    const documentId = useFormValue(["_id"]) as string | undefined;
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
@@ -30,14 +36,12 @@ export function createDoiInput(config: DoiInputConfig = {}) {
       setSuccess(false);
 
       try {
-        // Determine the correct port based on current location
-        const currentPort = window.location.port;
-        const apiPort = currentPort === "3333" ? "3000" : "3000";
-        const baseUrl = window.location.hostname === "localhost"
-          ? `http://localhost:${apiPort}`
-          : window.location.origin.replace(`:${currentPort}`, ":3000");
-
-        const response = await fetch(`${baseUrl}${apiPath}?doi=${encodeURIComponent(value)}`, {
+        // The Studio is embedded in the same Next.js app that serves the DOI
+        // route, so a same-origin relative request is all that's needed. (The
+        // old absolute/port-rewriting logic mangled the production origin into
+        // an invalid URL, which returned an HTML 404 — hence the "Unexpected
+        // token '<'" JSON error.)
+        const response = await fetch(`${apiPath}?doi=${encodeURIComponent(value)}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -50,6 +54,24 @@ export function createDoiInput(config: DoiInputConfig = {}) {
         }
 
         const data = await response.json();
+
+        // Auto-fill the sibling fields. The DOI route already returns values
+        // shaped to the publication schema (abstract → description). We only set
+        // fields the lookup actually resolved, so blanks never clobber anything.
+        if (documentId) {
+          const patch: Record<string, unknown> = {};
+          if (data.title) patch.title = data.title;
+          if (data.authors) patch.authors = data.authors;
+          if (data.journal) patch.journal = data.journal;
+          if (typeof data.year === "number") patch.year = data.year;
+          if (data.publicationDate) patch.publicationDate = data.publicationDate;
+          if (data.abstract) patch.description = data.abstract;
+          if (data.status) patch.status = data.status;
+          if (Object.keys(patch).length > 0) {
+            await client.patch(documentId).set(patch).commit();
+          }
+        }
+
         setSuccess(true);
         setFetchedData(data);
       } catch (err) {
@@ -107,10 +129,10 @@ export function createDoiInput(config: DoiInputConfig = {}) {
           <Card tone="positive" padding={3} radius={2}>
             <Stack space={3}>
               <Text size={1}>
-                <CheckmarkIcon /> Successfully fetched publication details!
+                <CheckmarkIcon /> Fetched and filled in the fields below.
               </Text>
               <Stack space={2}>
-                <Text size={1} weight="semibold">Fetched data (copy to fields above):</Text>
+                <Text size={1} weight="semibold">Applied values:</Text>
                 {fetchedData.title && (
                   <Box>
                     <Text size={1} muted>Title:</Text>
