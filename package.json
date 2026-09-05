@@ -17,10 +17,20 @@
     "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {
-    "turbo": "^2.7.4"
+    "turbo": "^2.10.12"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {
     "node": ">=18.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "postcss@<8.5.10": ">=8.5.10",
+      "uuid@<11.1.1": ">=11.1.1",
+      "adm-zip@<0.6.0": ">=0.6.0",
+      "postcss@<=8.5.11": ">=8.5.12",
+      "postcss@<=8.5.22": ">=8.5.23",
+      "postcss@<=8.5.17": ">=8.5.18"
+    }
   }
 }
