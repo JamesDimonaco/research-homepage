@@ -21,7 +21,7 @@
     "@sanity/client": "^7.27.0",
     "@sanity/icons": "^3.8.0",
     "@sanity/image-url": "^1.2.0",
-    "@sanity/ui": "^3.5.4",
+    "@sanity/ui": "^3.5.5",
     "groq": "^5.31.2",
     "next-sanity": "^11.6.13",
     "sanity": "^4.22.1"
