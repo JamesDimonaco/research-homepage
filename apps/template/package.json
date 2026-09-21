@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@portabletext/react": "^3.2.4",
-    "posthog-js": "^1.427.2",
+    "posthog-js": "^1.434.2",
     "@research-homepage/cms": "workspace:*",
     "@research-homepage/components": "workspace:*",
     "@research-homepage/ui": "workspace:*",
