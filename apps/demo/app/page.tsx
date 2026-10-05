@@ -640,7 +640,7 @@ export default function HomePage() {
         <Separator />
 
         {/* FAQ Section */}
-        <section id="faq" className="py-20 md:py-32 bg-muted/30">
+        <section id="faq" className="py-20 md:py-32">
           <div className="container mx-auto px-4">
             <div className="text-center space-y-4 mb-16">
               <Badge variant="outline">FAQ</Badge>
@@ -669,7 +669,7 @@ export default function HomePage() {
         <Separator />
 
         {/* Contact Section */}
-        <section id="contact" className="py-20 md:py-32">
+        <section id="contact" className="py-20 md:py-32 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="max-w-2xl mx-auto text-center space-y-6">
               <Badge variant="outline">Get Started</Badge>
