@@ -419,6 +419,7 @@ export default function HomePage() {
                   src={exampleSite}
                   alt="Publications page of nicholas.dimonaco.co.uk with citation metrics and per-paper citation badges"
                   placeholder="blur"
+                  sizes="(min-width: 1024px) 1024px, 100vw"
                   className="w-full h-auto"
                 />
               </Link>

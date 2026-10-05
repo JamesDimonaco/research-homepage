@@ -24,7 +24,7 @@ export default function OpengraphImage() {
           A website for your lab or your research
         </div>
         <div style={{ fontSize: 34, color: "#94a3b8", marginTop: 32 }}>
-          Set up for you in 48 hours. Publications, talks, datasets, and a domain of your own.
+          Set up for you in 24-48 hours. Publications, talks, datasets, and a domain of your own.
         </div>
       </div>
     ),
