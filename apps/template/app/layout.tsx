@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Libre_Franklin, Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider, configureComponents } from "@research-homepage/components";
+import { ThemeProvider, SiteFooter, configureComponents } from "@research-homepage/components";
 import { urlForImage } from "@/sanity/lib/image";
 import HeaderWrapper from "./components/HeaderWrapper";
 import { PostHogProvider } from "./components/PostHogProvider";
@@ -73,6 +73,7 @@ export default function RootLayout({
           >
             <HeaderWrapper />
             <main>{children}</main>
+            <SiteFooter />
           </ThemeProvider>
         </PostHogProvider>
       </body>

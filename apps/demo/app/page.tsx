@@ -1,6 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Button, Card, CardContent, CardHeader, Badge, Separator, Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@research-homepage/ui";
 import { CopyButton } from "./components/CopyButton";
+import exampleSite from "../public/example-site.png";
 import {
   BookOpen,
   Briefcase,
@@ -24,7 +26,10 @@ import {
   Sparkles,
   Layers,
   Monitor,
-  Smartphone
+  Smartphone,
+  QrCode,
+  Dna,
+  ExternalLink
 } from "lucide-react";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://researchhomepage.com";
@@ -179,7 +184,30 @@ const examplePages = [
   }
 ];
 
+const communityTools = [
+  {
+    icon: QrCode,
+    name: "MyEtAl",
+    href: "https://myetal.app",
+    tagline: "Share your research with a QR.",
+    description:
+      "Put one QR code on a poster, slide, or paper. Anyone who scans it lands on your paper or reading list, with no app to install. Sign in with ORCID, Google, or GitHub.",
+  },
+  {
+    icon: Dna,
+    name: "taxon-sync",
+    href: "https://taxon-sync.vercel.app",
+    tagline: "One name. Five databases.",
+    description:
+      "Look up a bacterial taxon and see its current name in NCBI, GTDB, SILVA, Greengenes2, and eHOMD. Flags nomenclature conflicts. Paste in a whole taxonomy table to translate it in bulk.",
+  },
+];
+
 const faqs = [
+  {
+    question: "Who builds this?",
+    answer: "James Dimonaco, an independent developer. I build tools for researchers: Research Homepage for your web presence, MyEtAl for sharing papers at conferences, and taxon-sync for microbiome taxonomy. You email me, I set your site up, and you deal with me directly."
+  },
   {
     question: "What is Research Homepage?",
     answer: "Research Homepage is a platform that helps research labs, individual researchers, and academic groups create professional websites to showcase publications, projects, team members, datasets, and achievements. No coding required."
@@ -231,6 +259,9 @@ export default function HomePage() {
             </Link>
             <Link href="#pricing" className="text-sm font-medium hover:text-primary transition-colors">
               Pricing
+            </Link>
+            <Link href="#community" className="text-sm font-medium hover:text-primary transition-colors">
+              Community
             </Link>
             <Link href="#faq" className="text-sm font-medium hover:text-primary transition-colors">
               FAQ
@@ -353,19 +384,25 @@ export default function HomePage() {
 
         <Separator />
 
-        {/* Visual Mockup Section */}
+        {/* Live Example Section */}
         <section className="py-20 md:py-32 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="text-center space-y-4 mb-16">
-              <Badge variant="outline">Preview</Badge>
+              <Badge variant="outline">Live Example</Badge>
               <h2 className="text-3xl md:text-4xl font-bold">
-                What Your Site Could Look Like
+                A Real Site, Running Today
               </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                This is Dr. Nicholas Dimonaco&apos;s publications page: citation counts from OpenAlex, DOI links, and a one-click Cite button.
+              </p>
             </div>
             <div className="max-w-5xl mx-auto">
-              {/* Mockup Browser Window */}
-              <div className="rounded-xl border bg-background shadow-2xl overflow-hidden">
-                {/* Browser Chrome */}
+              <Link
+                href="https://nicholas.dimonaco.co.uk/publications"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block rounded-xl border bg-background shadow-2xl overflow-hidden"
+              >
                 <div className="flex items-center gap-2 px-4 py-3 border-b bg-muted/50">
                   <div className="flex gap-1.5">
                     <div className="w-3 h-3 rounded-full bg-red-500" />
@@ -374,84 +411,34 @@ export default function HomePage() {
                   </div>
                   <div className="flex-1 mx-4">
                     <div className="bg-background rounded px-3 py-1 text-sm text-muted-foreground border">
-                      https://yourlab.edu
+                      https://nicholas.dimonaco.co.uk/publications
                     </div>
                   </div>
                 </div>
-                {/* Mockup Content */}
-                <div className="p-8 space-y-8">
-                  {/* Mock Header */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-10 h-10 rounded-lg bg-primary/20" />
-                      <div className="font-bold text-lg">The Smith Lab</div>
-                    </div>
-                    <div className="flex gap-6 text-sm text-muted-foreground">
-                      <span>Home</span>
-                      <span>Team</span>
-                      <span>Publications</span>
-                      <span>Projects</span>
-                      <span>Contact</span>
-                    </div>
+                <Image
+                  src={exampleSite}
+                  alt="Publications page of nicholas.dimonaco.co.uk with citation metrics and per-paper citation badges"
+                  placeholder="blur"
+                  sizes="(min-width: 1024px) 1024px, 100vw"
+                  className="w-full h-auto"
+                />
+              </Link>
+              <div className="flex flex-col items-center gap-6 mt-8">
+                <Button size="lg" variant="outline" asChild>
+                  <Link href="https://nicholas.dimonaco.co.uk" target="_blank" rel="noopener noreferrer">
+                    Visit the live site
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+                <div className="flex justify-center gap-6">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Monitor className="h-4 w-4" />
+                    <span>Desktop</span>
                   </div>
-                  {/* Mock Hero */}
-                  <div className="grid md:grid-cols-2 gap-8 items-center py-8">
-                    <div className="space-y-4">
-                      <Badge>Computational Biology</Badge>
-                      <h3 className="text-2xl font-bold">Understanding Complex Biological Systems</h3>
-                      <p className="text-muted-foreground">Our lab develops computational methods to analyze large-scale biological data and uncover patterns in complex systems.</p>
-                      <div className="flex gap-3">
-                        <div className="px-4 py-2 bg-primary text-primary-foreground rounded text-sm">View Research</div>
-                        <div className="px-4 py-2 border rounded text-sm">Meet the Team</div>
-                      </div>
-                    </div>
-                    <div className="h-48 rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                      <Beaker className="h-16 w-16 text-primary/40" />
-                    </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Smartphone className="h-4 w-4" />
+                    <span>Mobile Responsive</span>
                   </div>
-                  {/* Mock Stats */}
-                  <div className="grid grid-cols-4 gap-4 py-4 border-y">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-primary">50+</div>
-                      <div className="text-sm text-muted-foreground">Publications</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-primary">12</div>
-                      <div className="text-sm text-muted-foreground">Team Members</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-primary">8</div>
-                      <div className="text-sm text-muted-foreground">Active Projects</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-primary">5</div>
-                      <div className="text-sm text-muted-foreground">Open Datasets</div>
-                    </div>
-                  </div>
-                  {/* Mock Team Preview */}
-                  <div className="space-y-4">
-                    <h4 className="font-semibold">Our Team</h4>
-                    <div className="grid grid-cols-4 gap-4">
-                      {[1, 2, 3, 4].map((i) => (
-                        <div key={i} className="text-center">
-                          <div className="w-16 h-16 mx-auto rounded-full bg-muted mb-2" />
-                          <div className="text-sm font-medium">Dr. Team Member</div>
-                          <div className="text-xs text-muted-foreground">Postdoc</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* Device indicators */}
-              <div className="flex justify-center gap-6 mt-8">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Monitor className="h-4 w-4" />
-                  <span>Desktop</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Smartphone className="h-4 w-4" />
-                  <span>Mobile Responsive</span>
                 </div>
               </div>
             </div>
@@ -615,8 +602,45 @@ export default function HomePage() {
 
         <Separator />
 
+        {/* Community Section */}
+        <section id="community" className="py-20 md:py-32 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="text-center space-y-4 mb-16">
+              <Badge variant="outline">Community</Badge>
+              <h2 className="text-3xl md:text-4xl font-bold">Built for the Research Community</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Research Homepage is one of three tools I make for researchers. You can use the other two without talking to me.
+              </p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              {communityTools.map((tool) => (
+                <Card key={tool.name} className="p-8 flex flex-col">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 rounded-lg bg-primary/10">
+                      <tool.icon className="h-8 w-8 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold">{tool.name}</h3>
+                      <p className="text-muted-foreground">{tool.tagline}</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-6 flex-1">{tool.description}</p>
+                  <Button variant="outline" asChild className="w-fit">
+                    <Link href={tool.href} target="_blank" rel="noopener noreferrer">
+                      Try {tool.name}
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <Separator />
+
         {/* FAQ Section */}
-        <section id="faq" className="py-20 md:py-32 bg-muted/30">
+        <section id="faq" className="py-20 md:py-32">
           <div className="container mx-auto px-4">
             <div className="text-center space-y-4 mb-16">
               <Badge variant="outline">FAQ</Badge>
@@ -645,7 +669,7 @@ export default function HomePage() {
         <Separator />
 
         {/* Contact Section */}
-        <section id="contact" className="py-20 md:py-32">
+        <section id="contact" className="py-20 md:py-32 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="max-w-2xl mx-auto text-center space-y-6">
               <Badge variant="outline">Get Started</Badge>
@@ -695,6 +719,17 @@ export default function HomePage() {
       <footer className="border-t py-8">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} Research Homepage. Built with Next.js and Sanity.</p>
+          <p className="mt-2">
+            More from the same builder:{" "}
+            {communityTools.map((tool, index) => (
+              <span key={tool.name}>
+                {index > 0 && " · "}
+                <Link href={tool.href} target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">
+                  {tool.name}
+                </Link>
+              </span>
+            ))}
+          </p>
         </div>
       </footer>
     </div>
