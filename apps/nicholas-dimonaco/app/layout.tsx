@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Libre_Franklin } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider, configureComponents } from "@research-homepage/components";
+import { ThemeProvider, SiteFooter, configureComponents } from "@research-homepage/components";
 import { Analytics } from "@vercel/analytics/next";
 import { urlForImage } from "@/sanity/lib/image";
 import HeaderWrapper from "./components/HeaderWrapper";
@@ -86,6 +86,7 @@ export default function RootLayout({
           >
             <HeaderWrapper />
             <main className="min-h-screen overflow-x-hidden">{children}</main>
+            <SiteFooter />
           </ThemeProvider>
         </PostHogProvider>
       </body>

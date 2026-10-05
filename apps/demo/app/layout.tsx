@@ -67,21 +67,12 @@ export const metadata: Metadata = {
     title: "Research Homepage - Websites for Researchers & Research Labs",
     description:
       "Create stunning websites for research labs and individual researchers. Beautiful, SEO-optimized sites featuring publications, projects, team members, and datasets.",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Research Homepage - Professional Academic Websites",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Research Homepage - Websites for Researchers & Labs",
     description:
       "Create stunning websites for research labs and researchers. No coding required.",
-    images: ["/og-image.png"],
     creator: "@researchhomepage",
   },
   robots: {
