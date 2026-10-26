@@ -17,7 +17,7 @@
     "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {
-    "turbo": "^2.11.7"
+    "turbo": "^2.11.10"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {
@@ -30,7 +30,9 @@
       "adm-zip@<0.6.0": ">=0.6.0",
       "postcss@<=8.5.11": ">=8.5.12",
       "postcss@<=8.5.22": ">=8.5.23",
-      "postcss@<=8.5.17": ">=8.5.18"
+      "postcss@<=8.5.17": ">=8.5.18",
+      "postcss-selector-parser@<7.1.6": ">=7.1.6",
+      "zod@<4.6.6": ">=4.6.6"
     }
   }
 }
