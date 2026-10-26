@@ -18,7 +18,7 @@
     "lint": "eslint . --ext .ts,.tsx"
   },
   "dependencies": {
-    "@sanity/client": "^7.27.0",
+    "@sanity/client": "^7.28.0",
     "@sanity/icons": "^3.8.0",
     "@sanity/image-url": "^1.2.0",
     "@sanity/ui": "^3.5.5",
